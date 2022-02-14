@@ -2,9 +2,11 @@ spring-boot-study
 
 # 介绍
 
-跟着黑马程序员spring boot教程学习笔记
+跟着黑马程序员spring boot教程做的学习笔记，本笔记跟视频内容的项目名称和代码略有不同，都是基于我自己的考量，代码都已经过运行验证过的，仅供参考。
 
-视频地址：[https://www.bilibili.com/video/BV15b4y1a7yG](https://www.bilibili.com/video/BV15b4y1a7yG)
+视频教程地址：[https://www.bilibili.com/video/BV15b4y1a7yG](https://www.bilibili.com/video/BV15b4y1a7yG)
+
+<font color="red">注：四级标题和部分5级标题是使用子项目名称命名的，和我代码仓库的项目是一一对应的。</font>
 
 # 每个子项目对应的视频链接以及一些重要内容的笔记
 
@@ -1696,20 +1698,1033 @@ class MongodbApplicationTests {
 
 ### 16. 整合第三方技术
 
+#### 16.1 缓存
+
+##### springboot_16_01_01_cache_book_quickstart
+
 [P107 实用开发篇-104-缓存的作用](https://www.bilibili.com/video/BV15b4y1a7yG?p=107)
 
 [P108 实用开发篇-105-Spring缓存使用方式](https://www.bilibili.com/video/BV15b4y1a7yG?p=108)
 
+先自己用java的HashMap模拟一个缓存
+
+BookController.java
+
+```java
+@GetMapping("{id}")
+// 模拟缓存
+public R getById(@PathVariable Integer id) {
+    return new R(true, bookService.getById(id));
+}
+```
+
+BookServiceImpl.java
+
+```java
+@Override
+// 模拟缓存
+private HashMap<Serializable, Book> cache = new HashMap<>();
+
+public Book getById(Serializable id) {
+    // 如果当前缓存中没有本次要查询的数据，则进行查询，否则直接从缓存中获取数据返回
+    Book book = cache.get(id);
+    if (book == null) {
+        book = super.getById(id);
+        cache.put(id, book);
+    }
+    return book;
+}
+```
+
+##### springboot_16_01_02_cache_book_simple
+
+使用spring中自带的缓存技术
+
+* 在pom.xml中添加如下依赖
+  ```xml
+  <!--cache-->
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+  </dependency>
+  ```
+
+* 在springboot启动类上加@EnableCaching注解
+
+* 在业务层要使用缓存的方法上加上@Cacheable(value = "cacheSpace", key = "#id")注解，如下所示
+
+  ```java
+  @Cacheable(value = "cacheSpace", key = "#id")
+  public Book getById(Serializable id) {
+      System.out.println("id = " + id);
+      return super.getById(id);
+  }
+  ```
+
+  其中value表示缓存空间，key=“#id”，表示将方法参数id的值作为缓存中的一个key。
+
+##### springboot_16_01_03_cache_smscode_simple
+
 [P109 实用开发篇-106-手机验证码案例-生成验证码](https://www.bilibili.com/video/BV15b4y1a7yG?p=109)
 
-[P110 实用开发篇-107-手机验证码案例-验证码校验](https://www.bilibili.com/video/BV15b4y1a7yG?p=110)
+1. 手机验证码案例基础代码准备
+
+    * 存储手机号和验证码的实体类`SMSCode.java`
+
+        ```java
+        @Data
+        public class SMSCode {
+            private String phone;
+            private String code;
+        }
+        ```
+
+    * 生成验证码的工具类`CodeUtils.java`
+
+        ```java
+        @Component
+        public class CodeUtils {
+            private final String padding = "000000";
+            // 生成验证码（位数少于6位左边填充0，填充方法1）
+            public String generateCode(String phone) {
+                int hash = phone.hashCode();
+                int encryption = 20228888;
+                long result = hash ^ encryption;
+                long nowTime = System.nanoTime();
+                result = (result ^ nowTime) % 1000000;
+                String code = result + "";
+                // code = phone;
+                // padding.substring(code.length())   code.length()
+                //                                         6
+                //             0                           5
+                //             00                          4
+                //             000                         3
+                //             000                         3
+                //             0000                        2
+                //             00000                       1
+                //             000000                      0
+                code = padding.substring(code.length()) + code;
+                // System.out.println(code);
+                return code;
+            }
+        
+            private final String[] patch = {"000000", "00000", "0000", "000", "00", "0", ""};
+            // 生成验证码（位数少于6位左边填充0，填充方法2）
+            public String generateCode1(String phone) {
+                int hash = phone.hashCode();
+                int encryption = 20228888;
+                long result = hash ^ encryption;
+                long nowTime = System.nanoTime();
+                result = (result ^ nowTime) % 1000000;
+                String code = result + "";
+                // code = phone;
+                // patch[code.length]    code.length()
+                //   000000                    0
+                //   00000                     1
+                //   0000                      2
+                //   000                       3
+                //   00                        4
+                //   0                         5
+                //                             6
+                code = patch[code.length()] + code;
+                // System.out.println(code);
+                return code;
+            }
+        
+            // 根据手机号从缓存中获取验证码，缓存中有的话返回缓存中的值，没有的话就返回null
+            @Cacheable(value = "smsCode", key = "#phone")
+            public String getCodeByPhoneFromCache(String phone) {
+                return null;
+            }
+        }
+        
+        ```
+
+    * 业务层接口`SMSCodeService.java`
+
+        ```java
+        public interface SMSCodeService {
+            String sendCodeToSMS(String phone);
+
+            boolean checkCode(SMSCode smsCode);
+        }
+        ```
+    ```
+        
+    业务层接口实现类`SMSCodeServiceImpl.java`
+        
+    ​```java
+        @Service
+        public class SMSCodeServiceImpl implements SMSCodeService {
+            @Autowired
+        private CodeUtils codeUtils;
+            
+            @Override
+            public String sendCodeToSMS(String phone) {
+                return codeUtils.generateCode(phone);
+        }
+        
+            @Override
+            public boolean checkCode(SMSCode smsCode) {
+                return false;
+            }
+        }
+    ```
+
+2. 加入spring默认的缓存功能
+
+    * 在pom.xml中添加缓存依赖
+
+      ```xml
+      <!--cache-->
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-cache</artifactId>
+      </dependency>
+      ```
+
+    * 在SMSCodeServiceImpl的sendCodeToSMS()方法上添加@CachePut(value = "smsCode", key = "#phone")，如下所示
+
+      ```java
+      @Override
+      // @Cacheable(value = "smsCode", key = "#phone")
+      // 这里@Cacheable注解不适用，因为@Cacheable注解的功能是：如果缓存中没有值就去执行一次方法，然后将值存到缓存中，
+      // 如果有值就直接从缓存中取值并返回，并不会执行方法，因而缓存中值不会发生改变。
+      // 而用户点击界面发送一次验证码就调用了一次该方法，需要获取到新的验证码。
+      // 使用新的缓存注解@CachePut可以解决这个问题，每次调用都会执行方法，向缓存中存新的值并返回
+      @CachePut(value = "smsCode", key = "#phone")
+      public String sendCodeToSMS(String phone) {
+          return codeUtils.generateCode(phone);
+      }
+      ```
+
+    * 编写checkCode()方法：校验验证码是否正确
+
+      错误的写法：
+
+      ```java
+      @Override
+      public boolean checkCode(SMSCode smsCode) {
+          // 取出缓存中的验证码并与传递过来的验证码比对，如果相同，返回true，否则，返回false
+          // 用户填写的验证码
+          String code = smsCode.getCode();
+          // 缓存中存的验证码
+          String cacheCode = getCodeByPhoneFromCache(smsCode.getPhone());
+          return cacheCode.equals(code);
+      }
+      
+      // 根据手机号从缓存中获取验证码，缓存中有的话返回缓存中的值，没有的话就返回null
+      @Cacheable(value = "cacheSpace", key = "#phone")
+      public String getCodeByPhoneFromCache(String phone) {
+          return null;
+      }
+      ```
+
+      在getCodeByPhoneFromCache()方法上加了@Cacheable(value = "cacheSpace", key = "#phone")，然后在checkCode()方法中调用getCodeByPhoneFromCache()方法，这种方式看似是正确的，实际上@Cacheable注解不会生效，导致getCodeByPhoneFromCache()的返回值始终是null。<font color="red">这是由于被spring管理的类内的方法互调注解不会被解析。</font>
+
+      由此可以想到解决办法，将getCodeByPhoneFromCache()放到另外一个类（这里为了方便起见，直接放到CodeUtils类中），并将这个类交由spring管理（在类上面加@Component注解），然后再用codeUtils.getCodeByPhoneFromCache(smsCode.getPhone())即可正常从缓存中拿到值。代码如下：
+
+      ```java
+      @Override
+      public boolean checkCode(SMSCode smsCode) {
+          // 取出缓存中的验证码并与传递过来的验证码比对，如果相同，返回true，否则，返回false
+          // 用户填写的验证码
+          String code = smsCode.getCode();
+          // 缓存中存的验证码
+          String cacheCode = codeUtils.getCodeByPhoneFromCache(smsCode.getPhone());
+          return cacheCode.equals(code);
+      }
+      ```
+
+##### springboot_16_01_04_cache_smscode_ehcache
 
 [P111 实用开发篇-108-变更缓存供应商Ehcache](https://www.bilibili.com/video/BV15b4y1a7yG?p=111)
 
+基于验证码案例的代码和配置，使用ehcache替换spring默认的simple缓存
+
+1. 在pom.xml中加入ehcache的依赖
+
+   ```xml
+   <!--ehcache-->
+   <dependency>
+       <groupId>net.sf.ehcache</groupId>
+       <artifactId>ehcache</artifactId>
+   </dependency>
+   ```
+
+2. 在application.yml中加入如下配置
+
+   ```yaml
+   spring:
+     cache:
+       type: ehcache
+       # 如果配置文件改名了，可以打开下面的配置指定配置文件路径
+       # ehcache:
+         # config: ehcache-xxx.xml
+   ```
+
+3. 在resources目录下新建一个ehcache.xml配置文件，内容如下：
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="https://www.ehcache.org/ehcache.xsd"
+            updateCheck="false">
+       <diskStore path="D:\ehcache" />
+   
+       <!--默认缓存策略 -->
+       <!-- external：是否永久存在，设置为true则不会被清除，此时与timeout冲突，通常设置为false-->
+       <!-- diskPersistent：是否启用磁盘持久化-->
+       <!-- maxElementsInMemory：最大缓存数量-->
+       <!-- overflowToDisk：超过最大缓存数量是否持久化到磁盘-->
+       <!-- timeToIdleSeconds：最大不活动间隔，设置过长缓存容易溢出，设置过短无效果，可用于记录时效性数据，例如验证码-->
+       <!-- timeToLiveSeconds：最大存活时间-->
+       <!-- memoryStoreEvictionPolicy：缓存清除策略-->
+       <defaultCache
+           eternal="false"
+           diskPersistent="false"
+           maxElementsInMemory="1000"
+           overflowToDisk="false"
+           timeToIdleSeconds="60"
+           timeToLiveSeconds="60"
+           memoryStoreEvictionPolicy="LRU" />
+   
+       <cache
+           name="smsCode"
+           eternal="false"
+           diskPersistent="false"
+           maxElementsInMemory="1000"
+           overflowToDisk="false"
+           timeToIdleSeconds="10"
+           timeToLiveSeconds="10"
+           memoryStoreEvictionPolicy="LRU" />
+   
+   </ehcache>
+   ```
+
+   直接启动项目，并且验证码获取和验证的过程不报错，说明缓存替换成成功。
+
 [P112 补 知识加油站-04-数据淘汰策略](https://www.bilibili.com/video/BV15b4y1a7yG?p=112)
+
+* LRU: Least recently used, 淘汰最近最少被使用的数据
+* LFU: Least frequently used，淘汰使用频率最低的数据
+
+##### springboot_16_01_05_cache_smscode_redis
 
 [P113 实用开发篇-109-变更缓存供应商Redis](https://www.bilibili.com/video/BV15b4y1a7yG?p=113)
 
+基于验证码案例的代码和配置，使用redis替换spring默认的simple缓存
+
+1. 在pom.xml中加入redis的依赖
+
+   ```xml
+   <!--redis-->
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-data-redis</artifactId>
+   </dependency>
+   ```
+
+2. 在application.yml中加入如下配置
+
+   ```yaml
+   spring:
+     cache:
+       type: redis
+       redis:
+         # 是否使用缓存命名空间作为前缀，如：smsCode::18866668888，默认为true
+         use-key-prefix: true
+         cache-null-values: true # 是否缓存空值
+         key-prefix: aa # use-key-prefix为false的时候该项不生效
+         time-to-live: 10s # 缓存失效时间
+     redis:
+       host: 192.168.0.110
+       port: 6379
+       password: 123456
+   ```
+
+   直接启动项目，并且验证码获取和验证的过程不报错，说明缓存替换成成功。
+
+##### springboot_16_01_06_cache_smscode_memcached
+
 [P114 实用开发篇-110-memcached下载与安装](https://www.bilibili.com/video/BV15b4y1a7yG?p=114)
 
+安装步骤以及下载地址：[https://www.runoob.com/memcached/window-install-memcached.html](https://www.runoob.com/memcached/window-install-memcached.html)
+
 [P115 实用开发篇-111-变更缓存供应商memcached](https://www.bilibili.com/video/BV15b4y1a7yG?p=115)
+
+基于验证码案例的代码和配置，使用memcached替换spring默认的simple缓存，memcached最新的客户端技术是xmemcached
+
+1. 在pom.xml中加入xmemcached的依赖
+
+   ```xml
+   <!-- xmemcached -->
+   <dependency>
+       <groupId>com.googlecode.xmemcached</groupId>
+       <artifactId>xmemcached</artifactId>
+       <version>2.4.7</version>
+   </dependency>
+   ```
+
+2. 由于springboot并未收录memcached，所以只能通过硬编码的方式完成相关配置
+
+   XMemcachedConfig.java
+
+   ```java
+   @Component
+   public class XMemcachedConfig {
+       @Bean
+       public MemcachedClient getMemcachedClient() throws IOException {
+           MemcachedClientBuilder memcachedClientBuilder = new XMemcachedClientBuilder("192.168.0.102:11211");
+           MemcachedClient memcachedClient = memcachedClientBuilder.build();
+           return memcachedClient;
+       }
+   }
+   ```
+
+   SMSCodeServiceImpl.java
+
+   ```java
+   @Service
+   public class SMSCodeServiceImpl implements SMSCodeService {
+       @Autowired
+       private CodeUtils codeUtils;
+   
+       @Autowired
+       private MemcachedClient memcachedClient;
+   
+       @Override
+       public String sendCodeToSMS(String phone) {
+           String code = codeUtils.generateCode(phone);
+           try {
+               memcachedClient.set(phone, 10, code);
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
+           return code;
+       }
+   
+       @Override
+       public boolean checkCode(SMSCode smsCode) {
+           String code = null;
+           try {
+               code = memcachedClient.get(smsCode.getPhone()).toString();
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
+           return smsCode.getCode().equals(code);
+       }
+   }
+   ```
+
+   直接启动项目，并且验证码获取和验证的过程不报错，说明缓存替换成成功。
+
+到这里整合memcached算是成功了，可是配置都写死在代码中了，不太方便，这里可以结合前面的Configuration属性绑定的内容将配置抽取到application.yml文件中。
+
+1. 先定义一个实体类XMemcachedProperties，保存XMemcached的配置属性，并加上@Component和@ConfigurationProperties(prefix = "memcached")注解
+
+   ```java
+   @Component
+   @ConfigurationProperties(prefix = "memcached")
+   @Data
+   public class XMemcachedProperties {
+       private String addressList;
+       private int poolSize;
+       private long opTimeout;
+   }
+   ```
+
+2. 在application.yml中加入如下配置：
+
+   ```yaml
+   memcached:
+     address-list: 192.168.0.102:11211
+     poolSize: 10
+     opTimeout: 3000
+   ```
+
+3. 在XMemcachedConfig类中使用XMemcachedProperties类中封装的配置属性
+
+   ```java
+   @Component
+   public class XMemcachedConfig {
+       @Autowired
+       private XMemcachedProperties xMemcachedProperties;
+   
+       @Bean
+       public MemcachedClient getMemcachedClient() throws IOException {
+           MemcachedClientBuilder memcachedClientBuilder = new XMemcachedClientBuilder(xMemcachedProperties.getAddressList());
+           memcachedClientBuilder.setConnectionPoolSize(xMemcachedProperties.getPoolSize());
+           memcachedClientBuilder.setOpTimeout(xMemcachedProperties.getOpTimeout());
+           MemcachedClient memcachedClient = memcachedClientBuilder.build();
+           return memcachedClient;
+       }
+   }
+   ```
+
+##### springboot_16_01_07_cache_smscode_jetcache
+
+[P116实用开发篇-112-jetcache远程缓存方案](https://www.bilibili.com/video/BV15b4y1a7yG?p=116)
+
+基于验证码案例的代码和配置，使用redis替换spring默认的simple缓存
+
+1. 在pom.xml中加入redis的依赖
+
+   ```xml
+   <!--redis-->
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-data-redis</artifactId>
+   </dependency>
+   ```
+
+2. 在application.yml中加入如下配置
+
+   ```yaml
+   spring:
+     cache:
+       type: redis
+       redis:
+         # 是否使用缓存命名空间作为前缀，如：smsCode::18866668888，默认为true
+         use-key-prefix: true
+         cache-null-values: true # 是否缓存空值
+         key-prefix: aa # use-key-prefix为false的时候该项不生效
+         time-to-live: 10s # 缓存失效时间
+     redis:
+       host: 192.168.0.110
+       port: 6379
+       password: 123456
+   ```
+
+   直接启动项目，并且验证码获取和验证的过程不报错，说明缓存替换成成功。
+
+[P117实用开发篇-113-jetcache本地缓存方案](https://www.bilibili.com/video/BV15b4y1a7yG?p=117)
+
+jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程两种缓存，所谓本地就是使用HashMap类似的技术做的缓存，远程就是可以连接到redis。
+
+基于验证码案例的代码和配置，使用jetcache替换spring默认的simple缓存
+
+> <font color="red">springboot整合jetcache的时候使用2.6.3版本会报循环依赖的错误，我在网上搜索了一个解决循环依赖的方法，链接地址：[https://blog.csdn.net/chengxuyuanjava123/article/details/122459521](https://blog.csdn.net/chengxuyuanjava123/article/details/122459521)较复杂，仅供参考。</font>教程的弹幕中有个小伙伴讲springboot 2.5.4版本和jetcache整合不会出现这个问题，我就尝试了一下，居然真的可以，所以我就暂时使用了这个简单的方法。使用了springboot 2.5.4，有更好的办法解决这个问题的小伙伴，可以评论区告知，谢谢。
+
+首先用jetcache的远程方案，也就是底层用redis作为真正的缓存工具。
+
+1. 在pom.xml中加入jetcache的依赖
+
+   ```xml
+   <!--jetcache-->
+   <dependency>
+       <groupId>com.alicp.jetcache</groupId>
+       <artifactId>jetcache-starter-redis</artifactId>
+       <version>2.6.2</version>
+   </dependency>
+   ```
+
+2. 在application.yml中加入如下配置
+
+   ```yaml
+   # 配置jetcache
+   jetcache:
+     areaInCacheName: false # 是否把area加入的缓存的key中，默认为true
+     # 远程方案
+     remote:
+       default:
+         type: redis
+         host: 192.168.0.110
+         port: 6379
+         password: 123456
+         # keyConvertor: fastjson
+         # valueEncoder: java
+         # valueDecoder: java
+         poolConfig:
+           # minIdle: 5
+           # maxIdle: 20
+           maxTotal: 50
+         # 如果自定义命名空间，需要在@CreateCache注解中添加area=“sms”，不写默认为default
+   #    sms:
+   #      type: redis
+   #        host: localhost
+   #        port: 6379
+   #        password: 123456
+   #        poolConfig:
+   #          maxTotal: 50
+   ```
+   
+3. 在springboot启动类上加`@EnableCreateCacheAnnotation`注解
+
+4. 在业务层类SMSCodeServiceImpl中使用缓存
+
+   ```java
+   @Service
+   public class SMSCodeServiceImpl implements SMSCodeService {
+       @Autowired
+       private CodeUtils codeUtils;
+   
+       // 1、定义一个缓存
+       @CreateCache(name = "jetCache_", expire = 10, timeUnit = TimeUnit.SECONDS)
+       private Cache<String, String> jetCache;
+   
+       @Override
+       public String sendCodeToSMS(String phone) {
+           String code = codeUtils.generateCode(phone);
+           // 2、向缓存中存值
+           jetCache.put(phone, code);
+           return code;
+       }
+   
+       @Override
+       public boolean checkCode(SMSCode smsCode) {
+           if (smsCode == null) {
+               return false;
+           }
+           // 取出缓存中的验证码并与传递过来的验证码比对，如果相同，返回true，否则，返回false
+           // 用户填写的验证码
+           String code = smsCode.getCode();
+           // 3、获取缓存中存的验证码
+           String cacheCode = jetCache.get(smsCode.getPhone());
+           return code.equals(cacheCode);
+       }
+   }
+   ```
+
+   直接启动项目，并且验证码获取和验证的过程不报错，说明缓存替换成成功。
+
+再使用jetcache的本地方案
+
+1. 修改application.yml中jetcache的配置
+
+   ```yaml
+   # 配置jetcache
+   jetcache:
+     areaInCacheName: false # 是否把area加入的缓存的key中，默认为true
+     # 本地方案
+     local:
+       default:
+         type: linkedhashmap
+         keyConvertor: fastjson # 将对象转换成key使用的技术，这里转成json
+         # limit: 100
+     # 远程方案
+     remote:
+       default:
+         type: redis
+         host: 192.168.0.110
+         port: 6379
+         password: 123456
+         # keyConvertor: fastjson
+         # valueEncoder: java
+         # valueDecoder: java
+         poolConfig:
+           # minIdle: 5
+           # maxIdle: 20
+           maxTotal: 50
+         # 如果自定义命名空间，需要在@CreateCache注解中添加area=“sms”，不写默认为default
+   #    sms:
+   #      type: redis
+   #        host: localhost
+   #        port: 6379
+   #        password: 123456
+   #        poolConfig:
+   #          maxTotal: 50
+   ```
+
+2. 将SMSCodeServiceImpl.java中的@CreateCache注解中指定cacheType = CacheType.LOCAL
+
+   ```java
+   @Service
+   public class SMSCodeServiceImpl implements SMSCodeService {
+       @Autowired
+       private CodeUtils codeUtils;
+   
+       // 1、定义一个缓存
+       // remote方案
+       // @CreateCache(area="sms", name = "jetCache_", expire = 10, timeUnit = TimeUnit.SECONDS)
+       // 本地方案（查看源码知晓，如果不指定cacheType = CacheType.LOCAL，默认为远程。）
+       @CreateCache(name = "jetCache_", expire = 10, timeUnit = TimeUnit.SECONDS, cacheType = CacheType.LOCAL)
+       // 还可以指定远程和本地两种缓存方案共存
+       // @CreateCache(name = "jetCache_", expire = 10, timeUnit = TimeUnit.SECONDS, cacheType = CacheType.BOTH)
+       private Cache<String, String> jetCache;
+   
+       @Override
+       public String sendCodeToSMS(String phone) {
+           String code = codeUtils.generateCode(phone);
+           // 2、向缓存中存值
+           jetCache.put(phone, code);
+           return code;
+       }
+   
+       @Override
+       public boolean checkCode(SMSCode smsCode) {
+           if (smsCode == null) {
+               return false;
+           }
+           // 取出缓存中的验证码并与传递过来的验证码比对，如果相同，返回true，否则，返回false
+           // 用户填写的验证码
+           String code = smsCode.getCode();
+           // 3、获取缓存中存的验证码
+           String cacheCode = jetCache.get(smsCode.getPhone());
+           return code.equals(cacheCode);
+       }
+   }
+   ```
+
+如果远程和本地两种方案都启用，只需要将`SMSCodeServiceImpl.java`中的`@CreateCache`注解中指定`cacheType = CacheType.BOTH`即可。
+
+另附：jetcache详细配置属性
+
+![image-20220214140351959](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214140351959.png)
+
+##### springboot_16_01_07_cache_smscode_jetcache_method
+
+[P118实用开发篇-114-jetcache方法缓存](https://www.bilibili.com/video/BV15b4y1a7yG?p=118)
+
+`jetcache`也可以和`spring`默认的`simple-cache`一样在方法上加上缓存注解。这里为了体现对缓存的增删改查更多的操作，基于`springboot_16_01_02_cache_Book_simple`案例的代码进行修改。
+
+1. 在pom.xml中加入jetcache的依赖
+
+   ```xml
+   <!--jetcache-->
+   <dependency>
+       <groupId>com.alicp.jetcache</groupId>
+       <artifactId>jetcache-starter-redis</artifactId>
+       <version>2.6.2</version>
+   </dependency>
+   ```
+
+2. 在application.yml中加入如下配置
+
+   ```yaml
+   # 配置jetcache
+   jetcache:
+     statIntervalMinutes: 1 # 按照统计间隔打印输出缓存命中率，0表示不统计，默认为0
+     areaInCacheName: false # 是否把area加入的缓存的key中，默认为true
+     # 远程方案
+     remote:
+       default:
+         type: redis
+         host: 192.168.0.110
+         port: 6379
+         password: 123456
+         keyConvertor: fastjson
+         valueEncoder: java
+         valueDecoder: java
+         poolConfig:
+           # minIdle: 5
+           # maxIdle: 20
+           maxTotal: 50
+         # 如果自定义命名空间，需要在@CreateCache注解中添加area=“sms”，不写默认为default
+   #    sms:
+   #      type: redis
+   #        host: localhost
+   #        port: 6379
+   #        password: 123456
+   #        poolConfig:
+   #          maxTotal: 50
+   ```
+
+
+3. 在springboot的启动类上加`@EnableMethodCache(basePackages = "top.jacktgq")`，其中`basePackages=“top.jacktgq"`中的包名需要覆盖到用到缓存的业务类，另外`@EnableMethodCache`注解需要依赖`@EnableCreateCacheAnnotation`注解。如下所示。
+
+   ```	java
+   @SpringBootApplication
+   // jetcache启用缓存的主开关
+   @EnableCreateCacheAnnotation
+   // 开启方法缓存注解，
+   @EnableMethodCache(basePackages = "top.jacktgq")
+   public class CacheApplication {
+       public static void main(String[] args) {
+           SpringApplication.run(CacheApplication.class, args);
+       }
+   }
+   ```
+
+
+4. 在BookServiceImpl类中添加方法缓存注解
+
+   * 这里需要参考`springboot_16_01_03_cache_smscode`，在`CodeUtils.java`的`getCodeByPhoneFromCache()`方法上添加`@Cached(name = "smsCode", key = "#", expire = 10)`，其中`name`和之前的spring自带缓存的`@Cacheable`注解中的`value`一样都表示缓存的命名空间，`key`和`@Cacheable`中的`key`一样，`expire`表示缓存失效时间，默认单位为秒，不指定就是永不失效。如下所示。
+
+   * 如果在修改操作后想更新缓存，可以在修改方法上加上`@CacheUpdate(name = "book_", key = "#book.id", value = "#book")`注解；
+
+   * 如果想在删除操作后删除对应缓存，可以在删除方法上加上`@CacheInvalidate(name = "book_", key = "#id")`注解。
+   * 如果数据库由多个业务系统共用，一个系统对数据库的修改不能同步到另一个系统的缓存，这时就需要使用的到@CacheRefresh(refresh = 5)，其中refresh=5，表示每隔5秒钟刷新一次缓存。
+
+   具体代码如下：
+
+   ```java
+   @Override
+   @Cached(name = "book_", key="#id", expire = 3600)
+   @CacheRefresh(refresh = 5)
+   public Book getById(Serializable id) {
+       return super.getById(id);
+   }
+   
+   @Override
+   @CacheUpdate(name = "book_", key = "#book.id", value = "#book")
+   public boolean updateById(Book book) {
+       return super.updateById(book);
+   }
+   
+   @Override
+   @CacheInvalidate(name = "book_", key = "#id")
+   public boolean removeById(Serializable id) {
+       return super.removeById(id);
+   }
+   
+   @Override
+   public IPage<Book> getPage(int currentPage, int pageSize) {
+       IPage<Book> page = new Page<>(currentPage, pageSize);
+       bookMapper.selectPage(page, null);
+       return page;
+   }
+   ```
+
+   > <font color="red">注：如果这里被@Cache注解修饰的方法的返回值为普通的实体类，那么这个实体类需要实现Serializable接口，并且在application.yml配置文件的jetcache下配置      keyConvertor: fastjson, valueEncoder: java, valueDecoder: java，否则会报错。</font>
+   >
+   > 1. Book实体类要实现Serializable接口
+   >
+   >    ```java
+   >   @Component
+   >    @Data
+   >    public class Book implements Serializable {
+   >        private Integer id;
+   >        private String name;
+   >        private String type;
+   >        private String description;
+   >    }
+   >    ```
+   >
+   > 2. 在application.yml配置文件的jetcache下配置valueEncoder: java, valueDecoder: java
+   >
+   >    ```yaml
+   >    # 配置jetcache
+   >    jetcache:
+   >      statIntervalMinutes: 1 # 按照统计间隔打印输出缓存命中率，0表示不统计，默认为0
+   >      areaInCacheName: false # 是否把area加入的缓存的key中，默认为true
+   >      # 本地方案
+   >      local:
+   >        default:
+   >          type: linkedhashmap
+   >          keyConvertor: fastjson # 将对象转换成key使用的技术，这里转成json
+   >          # limit: 100
+   >      # 远程方案
+   >      remote:
+   >        default:
+   >          type: redis
+   >          host: 192.168.0.110
+   >          port: 6379
+   >          password: 123456
+   >          keyConvertor: fastjson
+   >          valueEncoder: java
+   >          valueDecoder: java
+   >          poolConfig:
+   >            # minIdle: 5
+   >            # maxIdle: 20
+   >            maxTotal: 50
+   >    ```
+
+##### springboot_16_01_09_cache_smscode_j2cache_ehcache_redis
+
+[P119实用开发篇-115-j2cache基本操作](https://www.bilibili.com/video/BV15b4y1a7yG?p=119)
+
+> j2cache是一个缓存整合框架，可以提供缓存的整合方案，使个各种缓存搭配使用，自身不提供缓存功能。
+
+这里基于验证码案例的代码和配置，使用j2cache整合ehcache和redis替换spring原有的simple缓存。
+
+1. 在pom.xml中加入j2cache的相关依赖
+
+   ```xml
+   <!--j2cache-->
+   <dependency>
+       <groupId>net.oschina.j2cache</groupId>
+       <artifactId>j2cache-core</artifactId>
+       <version>2.8.4-release</version>
+   </dependency>
+   <dependency>
+       <groupId>net.oschina.j2cache</groupId>
+       <artifactId>j2cache-spring-boot2-starter</artifactId>
+       <version>2.8.0-release</version>
+   </dependency>
+   <!--j2cache默认帮忙引入了redis的依赖-->
+   <!--ehcache-->
+   <dependency>
+       <groupId>net.sf.ehcache</groupId>
+       <artifactId>ehcache</artifactId>
+   </dependency>
+   ```
+
+2. 在resources目录下创建配置文件
+
+   ehcache.xml
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="https://www.ehcache.org/ehcache.xsd"
+            updateCheck="false">
+       <diskStore path="D:\ehcache" />
+   
+       <!--默认缓存策略 -->
+       <!-- external：是否永久存在，设置为true则不会被清除，此时与timeout冲突，通常设置为false-->
+       <!-- diskPersistent：是否启用磁盘持久化-->
+       <!-- maxElementsInMemory：最大缓存数量-->
+       <!-- overflowToDisk：超过最大缓存数量是否持久化到磁盘-->
+       <!-- timeToIdleSeconds：最大不活动间隔，设置过长缓存容易溢出，设置过短无效果，可用于记录时效性数据，例如验证码-->
+       <!-- timeToLiveSeconds：最大存活时间-->
+       <!-- memoryStoreEvictionPolicy：缓存清除策略-->
+       <defaultCache
+           eternal="false"
+           diskPersistent="false"
+           maxElementsInMemory="1000"
+           overflowToDisk="false"
+           timeToIdleSeconds="60"
+           timeToLiveSeconds="60"
+           memoryStoreEvictionPolicy="LRU" />
+   
+       <cache
+           name="smsCode"
+           eternal="false"
+           diskPersistent="false"
+           maxElementsInMemory="1000"
+           overflowToDisk="false"
+           timeToIdleSeconds="10"
+           timeToLiveSeconds="10"
+           memoryStoreEvictionPolicy="LRU" />
+   
+   </ehcache>
+   ```
+
+   j2cache.properties
+
+   ```properties
+   # 一级缓存
+   j2cache.L1.provider_class = ehcache
+   ehcache.configXml = ehcache.xml
+   # 二级缓存
+   j2cache.L2.provider_class = net.oschina.j2cache.cache.support.redis.SpringRedisProvider
+   j2cache.L2.config_section = redis
+   redis.hosts = 192.168.0.110:6379
+   redis.timeout = 2000
+   redis.password = 123456
+   
+   # 指定模式，可以消除一行警告信息
+   redis.mode = single
+   
+   # 一级缓存中的数据如何到达二级缓存
+   j2cache.broadcast = net.oschina.j2cache.cache.support.redis.SpringRedisPubSubPolicy
+   ```
+
+   更详细的配置内容可以去j2cache的jar包路径下寻得
+
+   ![image-20220214181819635](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214181819635.png)
+
+3. 在SMSCodeServiceImpl类中编写j2cache相关代码
+
+   ```java
+   @Service
+   public class SMSCodeServiceImpl implements SMSCodeService {
+       @Autowired
+       private CodeUtils codeUtils;
+   
+       @Autowired
+       private CacheChannel cacheChannel;
+   
+       @Override
+       public String sendCodeToSMS(String phone) {
+           String code = codeUtils.generateCode(phone);
+           cacheChannel.set("sms", phone, code);
+           return code;
+       }
+   
+       @Override
+       public boolean checkCode(SMSCode smsCode) {
+           if (smsCode == null) {
+               return false;
+           }
+           // 取出缓存中的验证码并与传递过来的验证码比对，如果相同，返回true，否则，返回false
+           // 用户填写的验证码
+           String code = smsCode.getCode();
+           // 缓存中存的验证码
+           String cacheCode = cacheChannel.get("sms", smsCode.getPhone()).asString();
+           return code.equals(cacheCode);
+       }
+   }
+   ```
+
+   <font color="red">注：如果运行工过程中报如下错误：</font>
+
+   ```java
+   Caused by: net.sf.ehcache.CacheException: Another unnamedCacheManager already exists in the same VM. Please provide uniquenames for each CacheManagerxxxxxxxxxx1 1Caused by: net.sf.ehcache.CacheException: Another unnamed CacheManager alreadyCaused by: net.sf.ehcache.CacheException: Another unnamedCacheManager already exists in the same VM. Please provide uniquenames for each CacheManager
+   ```
+
+   <font color="red">检查一下springboot启动类上面有没有多余的缓存注解，如@EnableCaching，这会跟j2cache发生冲突，j2cache不需要在springboot启动类上面加注解，复制项目的时候需要小心。</font>
+
+4. 消除一些警告日志
+
+   到此项目是可以正常启动的，功能也正常，但是控制台报了一些警告信息
+
+   * 日志冲突异常
+
+     ```java
+     SLF4J: Class path contains multiple SLF4J bindings.
+     SLF4J: Found binding in [jar:file:/D:/repository/ch/qos/logback/logback-classic/1.2.10/logback-classic-1.2.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+     SLF4J: Found binding in [jar:file:/D:/repository/org/slf4j/slf4j-simple/1.7.33/slf4j-simple-1.7.33.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+     SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+     SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
+     ```
+
+     冲突的意思是slf4j-simple和logback-classic发生了冲突，这里选择保留springboot默认的logback日志，排除slf4j-simple。打开maven面板，选中项目，然后点击显示依赖项按钮，
+
+     ![image-20220214213153252](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214213153252.png)
+
+     会弹出一个依赖项拓扑图，在拓扑图中寻找到slf4j-simple的上层包为j2cache-core
+
+     ![image-20220214213640009](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214213640009.png)
+
+     去pom.xml中的j2cache-core的依赖中排除slf4j-simple即可
+
+     ```xml
+     <dependency>
+         <groupId>net.oschina.j2cache</groupId>
+         <artifactId>j2cache-core</artifactId>
+         <version>2.8.4-release</version>
+         <exclusions>
+             <exclusion>
+                 <groupId>org.slf4j</groupId>
+                 <artifactId>slf4j-simple</artifactId>
+             </exclusion>
+         </exclusions>
+     </dependency>
+     ```
+
+     再启动项目，就不会再报这个警告了。
+
+[P120实用开发篇-116-j2cache相关配置](https://www.bilibili.com/video/BV15b4y1a7yG?p=120)
+
+在application.yml中对j2cache的其他配置
+
+```yaml
+# 指定命名空间，可以作为key的公共前缀
+redis.namespace = j2cache
+# 设置是否启用二级缓存，默认为true
+j2cache.l2-cache-open = false
+```
+
+#### 16.2 任务
+
+[P121实用开发篇-117-springboot整合quartz](https://www.bilibili.com/video/BV15b4y1a7yG?p=121)
+
+[P122实用开发篇-118-springboot整合task](https://www.bilibili.com/video/BV15b4y1a7yG?p=122)
+
+#### 16.3 邮件
+
+[P123实用开发篇-119-发送简单邮件](https://www.bilibili.com/video/BV15b4y1a7yG?p=123)
+
+[P124实用开发篇-120-发送多部件邮件](https://www.bilibili.com/video/BV15b4y1a7yG?p=124)
+
+[P125实用开发篇-121-消息简介](https://www.bilibili.com/video/BV15b4y1a7yG?p=125)
+
+#### 16.4 消息
+
+[P126实用开发篇-122-购物订单案例-发送短信](https://www.bilibili.com/video/BV15b4y1a7yG?p=126)
+
+[P127实用开发篇-123-ActiveMQ安装](https://www.bilibili.com/video/BV15b4y1a7yG?p=127)
+
+[P128实用开发篇-124-springboot整合ActiveMQ](https://www.bilibili.com/video/BV15b4y1a7yG?p=128)
