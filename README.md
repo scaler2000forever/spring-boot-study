@@ -2372,7 +2372,7 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
 
 ![image-20220214140351959](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214140351959.png)
 
-##### springboot_16_01_07_cache_smscode_jetcache_method
+##### springboot_16_01_08_cache_smscode_jetcache_method
 
 [P118实用开发篇-114-jetcache方法缓存](https://www.bilibili.com/video/BV15b4y1a7yG?p=118)
 
@@ -2709,15 +2709,273 @@ j2cache.l2-cache-open = false
 
 #### 16.2 任务
 
+##### springboot_16_02_01_task_quartz
+
 [P121实用开发篇-117-springboot整合quartz](https://www.bilibili.com/video/BV15b4y1a7yG?p=121)
+
+springboot整合quartz分为以下几个步骤：
+
+1. 在pom.xml中加入Springboot整合quartz的依赖
+
+   ```xml
+   <!--quartz-->
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-quartz</artifactId>
+   </dependency>
+   ```
+
+2. 在springboot程序启动类上加@EnableScheduling注解，开启定时任务功能
+
+   ```java
+   //开启定时任务功能
+   @EnableScheduling
+   ```
+
+3. 编写一个类MyQuartz继承QuartzJobBean，作为Quartz要执行的工作（任务）
+
+   ```java
+   public class MyQuartz extends QuartzJobBean {
+       @Override
+       protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+           System.out.println("Quartz task run...");
+       }
+   }
+   ```
+
+4. 编写一个QuartzConfig类，配置Quartz具体的执行过程，并加上@Configuration注解
+
+   ```java
+   @Configuration
+   public class QuartzConfig {
+       @Bean
+       public JobDetail printJobDetail() {
+           //绑定具体的工作
+           return JobBuilder.newJob(MyQuartz.class).storeDurably().build();
+       }
+   
+       @Bean
+       public Trigger printJobTrigger() {
+           CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0/5 * * * * ?");
+           // 绑定具体的工作明细
+           return TriggerBuilder.newTrigger().forJob(printJobDetail()).withSchedule(scheduleBuilder).build();
+       }
+   }
+   ```
+
+5. 直接启动springboot程序，任务便会自动执行
+
+##### springboot_16_02_02_task_spring
 
 [P122实用开发篇-118-springboot整合task](https://www.bilibili.com/video/BV15b4y1a7yG?p=122)
 
+使用springboot自带的定时任务
+
+1. 在springboot程序启动类上加@EnableScheduling注解，开启定时任务功能
+
+   ```java
+   //开启定时任务功能
+   @EnableScheduling
+   ```
+
+2. 编写一个任务类，加上@Component注解，要定时执行的方法上加上@Scheduled(cron = "0/3 * * * * ?")，用cron表达式指定执行的周期
+
+   ```java
+   @Component
+   public class MyTask {
+       @Scheduled(cron = "0/3 * * * * ?")
+       public void print() {
+           System.out.println("spring task run...");
+       }
+   }
+   ```
+
+3. 直接启动springboot程序，任务便会自动执行
+
+4. Spring Task还可以在application.yml文件中进行更细致的配置
+
+   ```yaml
+   spring:
+     task:
+       scheduling:
+         # 任务调度的线程池的大小
+         pool:
+           size: 1
+         # 调度线程名称前缀 默认 scheduling-，方便调试时使用
+         thread-name-prefix: spring_task_
+         shutdown:
+           # 线程池关闭时等待所有任务完成
+           await-termination: false
+           # 调度线程关闭前最大等待时间，确保最后一定关闭
+           await-termination-period: 10s
+   ```
+
 #### 16.3 邮件
+
+##### springboot_16_03_mail
 
 [P123实用开发篇-119-发送简单邮件](https://www.bilibili.com/video/BV15b4y1a7yG?p=123)
 
+完成代码发邮件案例之前先准备好两个邮箱，这里采用一个QQ邮箱和一个163邮箱，后面用这两个邮箱互相发送消息。
+
+代码发邮件采用的是SMTP协议，收邮件采用的是POP3或者IMAP协议，使用代码发邮件需要在配置文件中填写账号和授权码，授权码需要去邮箱管理后台界面进行设置。
+
+* QQ邮箱开启POP3/SMTP服务，获取授权码
+
+  1. 进入QQ邮箱主页，找到设置，然后点击账户选项
+
+     ![image-20220215014949660](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215014949660.png)
+
+  2. 鼠标滚轮往下滑，找到POP3/SMTP服务开启的地方
+
+     ![image-20220215015249141](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215015249141.png)
+
+     3. 按照提示发送短信，点击我已发送，然后记录一下授权码，一会儿配置文件中使用
+
+     ![image-20220215015351683](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215015351683.png)
+
+  
+
+* 163邮箱开启POP3/SMTP服务，获取授权码
+
+  1. 进入163邮箱主页，点击设置，选择POP3/SMTP/IMAP
+
+     ![image-20220215015802106](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215015802106.png)
+
+  2. 点击开启IMAP/SMTP服务
+
+     ![image-20220215020216002](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215020216002.png)
+
+  3. 发送短信获取授权码
+
+     ![image-20220215020459960](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215020459960.png)
+
+spring整合mail
+
+1. 在pom.xml中加入spring整合mail的依赖
+
+   ```xml
+   <!--mail-->
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-mail</artifactId>
+   </dependency>
+   ```
+
+2. 在application.yml中添加邮箱的相关配置
+
+   ```yaml
+   spring:
+     mail:
+       host: smtp.qq.com # 邮件服务供应商
+       username: xxxxxxxx@qq.com # 邮箱账号
+       password: xxxxxxxxxxxx # 授权码
+   ```
+
+3. 业务层接口
+
+   ```java
+   public interface MailService {
+       // 发送简单消息
+       void sendMail();
+   }
+   ```
+
+   业务层实现类，实现`sendMail()`方法，使用`JavaMailSender`类对象进行邮件的发送，这里先发送一个简单的邮件，仅包含发送人、接收人、主题、正文四项，消息需要设置到`SimpleMailMessage`类对象中。
+
+   ```java
+   @Service
+   public class MailServiceImpl implements MailService {
+       @Autowired
+       private JavaMailSender javaMailSender;
+   
+       // 发送人
+       private String from = "xxxxxxxx@qq.com";
+   
+       // 接收人
+       private String to = "xxxxxxxx@163.com";
+   
+       // 主题
+       private String subject = "测试发邮件";
+   
+       // 正文
+       private String context = "测试邮件的正文内容";
+   
+       @Override
+       public void sendMail() {
+           SimpleMailMessage msg = new SimpleMailMessage();
+           msg.setFrom(from);
+           msg.setTo(to);
+           msg.setSubject(subject);
+           msg.setText(context);
+           javaMailSender.send(msg);
+       }
+   }
+   ```
+
+4. 测试类
+
+   ```java
+   @SpringBootTest
+   class MailApplicationTests {
+   	@Autowired
+   	private MailService mailService;
+   
+   	@Test
+   	void contextLoads() {
+   		mailService.sendMail();
+   	}
+   }
+   ```
+
+   运行测试类，去收件邮箱中查看消息接收到了
+
+   ![image-20220215022452235](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215022452235.png)
+
+   如果msg.setFrom(from + "(章北海)")，那么会将收件人的邮箱前加上这个备注名称
+
+   ![image-20220215022959431](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215022959431.png)
+
 [P124实用开发篇-120-发送多部件邮件](https://www.bilibili.com/video/BV15b4y1a7yG?p=124)
+
+* 要想在发送邮件的时候可以带上图片或者文件等附件，需要使用MimeMessage类对象封装消息 
+
+* 要想正文以html格式解析，需要指定第二个参数为true
+
+* 要想发送附件，需要指定第二个参数为true
+
+* 具体代码如下：
+
+  ```java
+  @Override
+  // 发送带链接和附件的消息
+  public void sendMailWithLinkAttachment() throws MessagingException {
+      MimeMessage msg = javaMailSender.createMimeMessage();
+      // 要想发送附件，需要指定第二个参数为true
+      MimeMessageHelper msgHelper = new MimeMessageHelper(msg, true);
+      msgHelper.setFrom(from + "(章北海)");
+      msgHelper.setTo(to);
+      // 主题
+      String subject = "测试发送带链接和附件的消息";
+      // 正文
+      String context = "<a href='https://www.baidu.com'>百度一下</a><br><img src='https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg01.vgtime.com%2Fgame%2Fcover%2F2021%2F06%2F09%2F210609232854124_u93176.jpg&refer=http%3A%2F%2Fimg01.vgtime.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1647456598&t=8808f4643e61d9d2790f9f83d9f620a5'>";
+      msgHelper.setSubject(subject);
+      // 要想正文以html格式解析，需要指定第二个参数为true
+      msgHelper.setText(context, true);
+  
+      // 添加附件
+      File file1 = new File("D:\\ideacode\\spring-boot-study\\springboot_16_03_mail\\src\\main\\resources\\test.jpg");
+      File file2 = new File("D:\\ideacode\\spring-boot-study\\springboot_16_03_mail\\target\\springboot_16_03_mail-0.0.1-SNAPSHOT.jar");
+      msgHelper.addAttachment(file1.getName(), file1);
+      msgHelper.addAttachment(file2.getName(), file2);
+  
+      javaMailSender.send(msg);
+  }
+  ```
+
+  去邮箱中查看消息，图片和文件都顺利接收到了
+
+![image-20220215030553525](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215030553525.png)
 
 [P125实用开发篇-121-消息简介](https://www.bilibili.com/video/BV15b4y1a7yG?p=125)
 
