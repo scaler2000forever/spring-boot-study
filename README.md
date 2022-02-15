@@ -1,7 +1,5 @@
-spring-boot-study
-
 # 介绍
-
+代码仓库地址：[https://gitee.com/CandyWall/spring-boot-study](https://gitee.com/CandyWall/spring-boot-study)
 跟着黑马程序员spring boot教程做的学习笔记，本笔记跟视频内容的项目名称和代码略有不同，都是基于我自己的考量，代码都已经过运行验证过的，仅供参考。
 
 视频教程地址：[https://www.bilibili.com/video/BV15b4y1a7yG](https://www.bilibili.com/video/BV15b4y1a7yG)
@@ -262,7 +260,7 @@ kill -9 <pid>
 
 单文件版：
 
-application.yml文件：
+`application.yml`文件：
 
 ```yaml
 # 应用环境
@@ -299,7 +297,7 @@ server:
 
 ##### yaml多文件版
 
-application.yml
+`application.yml`
 
 ```yaml
 # 应用环境
@@ -309,7 +307,7 @@ spring:
     active: test
 ```
 
-application-dev.yml
+`application-dev.yml`
 
 ```yaml
 # 开发环境
@@ -317,7 +315,7 @@ server:
   port: 8080
 ```
 
-application-pro.yml
+`application-pro.yml`
 
 ```yaml
 # 生产环境
@@ -325,7 +323,7 @@ server:
   port: 80
 ```
 
-application-test.yml
+`application-test.yml`
 
 ```yaml
 # 测试环境
@@ -337,14 +335,14 @@ server:
 
 ##### properties多文件版
 
-application.properties
+`application.properties`
 
 ```properties
 # 应用环境
 spring.profiles.active=test
 ```
 
-application-dev.properties
+`application-dev.properties`
 
 ```properties
 # 开发环境
@@ -358,7 +356,7 @@ application-pro.properties
 server.port=8080
 ```
 
-application-test.properties
+`application-test.properties`
 
 ```properties
 # 测试环境
@@ -369,7 +367,7 @@ server.port=8888
 
 使用group属性配置同组的配置文件，active可以直接使一组配置文件同时生效
 
-application.yml
+`application.yml`
 
 ```yaml
 #spring:
@@ -386,21 +384,21 @@ spring:
       "test": testDB, TestMVC
 ```
 
-application-dev.yml
+`application-dev.yml`
 
 ```yaml
 server:
   port: 80
 ```
 
-application-devDB.yml
+`application-devDB.yml`
 
 ```yaml
 server:
   port: 81
 ```
 
-application-devMVCyml
+`application-devMVCyml`
 
 ```yaml
 server:
@@ -413,9 +411,9 @@ server:
 
 [P65 运维实用篇-62-多环境开发控制](https://www.bilibili.com/video/BV15b4y1a7yG?p=65)
 
-maven中使用多环境，然后在springboot中读取maven中的配置
+`maven`中使用多环境，然后在`springboot`中读取`maven`中的配置
 
-pom.xml中的配置
+`pom.xml`中的配置
 
 ```xml
 <!--设置多环境-->
@@ -448,7 +446,7 @@ pom.xml中的配置
 </profiles>
 ```
 
-application.yml中的配置
+`application.yml`中的配置
 
 ```yaml
 #spring:
@@ -509,7 +507,7 @@ spring:
 
 3. 在注册表项中勾选`compiler.automake.allow.when.app.running`
 ![image-20220122194309467](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220122194309467.png)
-4. idea新版本2021.3.1中在注册表中找不到改选项，需要在高级设置中进行设置。
+4. idea新版本`2021.3.1`中在注册表中找不到改选项，需要在高级设置中进行设置。
     ![image-20220122193933991](C:\Users\CandyWall\AppData\Roaming\Typora\typora-user-images\image-20220122193933991.png)
 
 [P72 开发实用篇-69-热部署范围配置](https://www.bilibili.com/video/BV15b4y1a7yG?p=72)
@@ -529,7 +527,7 @@ spring:
       enabled: false
 ```
 
-如果配置文件比较多的时候找热部署对应配置比较麻烦，可以在springboot启动类的main方法中设置，此处设置的优先级将比配置文件高，一定会生效。
+如果配置文件比较多的时候找热部署对应配置比较麻烦，可以在`springboot`启动类的main方法中设置，此处设置的优先级将比配置文件高，一定会生效。
 
 ```java
 System.setProperty("spring.devtools.restart.enabled", "false");
@@ -541,19 +539,19 @@ System.setProperty("spring.devtools.restart.enabled", "false");
 
 [P74 实用开发篇-71-第三方bean属性绑定](https://www.bilibili.com/video/BV15b4y1a7yG?p=74)
 
-1. 先在要配置的类上面加`@Component`注解将该类交由spring容器管理；
+1. 先在要配置的类上面加`@Component`注解将该类交由`spring`容器管理；
 
 2. `@ConfigurationProperties(prefix="xxx")`，`xxx`跟`application.yml`配置文件中的属性对应；
 
-3. 如果多个配置类想统一管理也可以通过`@EnableConfigurationProperties({xxx.class, yyy.class})`的方式完成配置，不过该注解会与@Component配置发生冲突，二选一即可；
+3. 如果多个配置类想统一管理也可以通过`@EnableConfigurationProperties({xxx.class, yyy.class})`的方式完成配置，不过该注解会与`@Component`配置发生冲突，二选一即可；
 
-4. 第三方类对象想通过配置进行属性注入，可以通过创建一个方法，在方法体上加@Bean和@ConfigurationProperties(prefix="xxx")注解，然后方法返回这个第三方对象的方式。
+4. 第三方类对象想通过配置进行属性注入，可以通过创建一个方法，在方法体上加`@Bean`和`@ConfigurationProperties(prefix="xxx")`注解，然后方法返回这个第三方对象的方式。
 
-5. 使用@ConfigurationProperties(prefix="xxx")注解后idea工具会报一个警告Spring Boot Configuration Annotation Processor not configured
+5. 使用`@ConfigurationProperties(prefix="xxx")`注解后`idea`工具会报一个警告`Spring Boot Configuration Annotation Processor not configured`
 
    ![image-20220123172141642](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220123172141642.png)
 
-   只需要在pom.xml中加上如下依赖刷新即可消除该警告
+   只需要在`pom.xml`中加上如下依赖刷新即可消除该警告
 
    ```xml
    <dependency>
@@ -564,11 +562,11 @@ System.setProperty("spring.devtools.restart.enabled", "false");
 
 [P75 实用开发篇-72-松散绑定](https://www.bilibili.com/video/BV15b4y1a7yG?p=75)
 
-@ConfigurationProperties绑定属性支持属性名宽松绑定，又叫松散绑定。
+`@ConfigurationProperties`绑定属性支持属性名宽松绑定，又叫松散绑定。
 
-比如要将ServerConfig.class作为配置类，并通过配置文件application.yml绑定属性
+比如要将`ServerConfig.class`作为配置类，并通过配置文件`application.yml`绑定属性
 
-ServerConfig.class
+`ServerConfig.class`
 
 ```java
 @Component
@@ -581,7 +579,7 @@ public class ServerConfig {
 }
 ```
 
-application.yml
+`application.yml`
 
 ```yaml
 serverConfig:
@@ -620,9 +618,9 @@ public class ServerConfig {
 
 [P77 实用开发篇-74-bean属性校验](https://www.bilibili.com/video/BV15b4y1a7yG?p=77)
 
-引入Bean属性校验框架的步骤：
+引入`Bean`属性校验框架的步骤：
 
-1. 在pom.xml中添加JSR303规范和hibernate校验框架的依赖：
+1. 在`pom.xml`中添加`JSR303`规范和`hibernate`校验框架的依赖：
 
 ```xml
 <!--导入JSR303规范-->
@@ -637,8 +635,8 @@ public class ServerConfig {
 </dependency>
 ```
 
-2. 在要校验的类上加@Validated注解
-3. 设置具体的校验规则，如：@Max(value=8888, message="最大值不能超过8888")
+2. 在要校验的类上加`@Validated`注解
+3. 设置具体的校验规则，如：`@Max(value=8888, message="最大值不能超过8888")`
 
 ```java
 @ConfigurationProperties(prefix = "server-config")
@@ -663,7 +661,7 @@ public class ServerConfig {
 
 进制转换中的一些问题：
 
-如application.yml文件中对数据库有如下配置：
+如`application.yml`文件中对数据库有如下配置：
 
 ```yaml
 datasource:
@@ -680,16 +678,16 @@ datasource:
 
 #### springboot_14_test
 
-`@SpringBootTest`注解中可以设置`properties`和`args`属性，这里的args属性的作用跟idea工具中自带的程序参数类似，只不过这里的配置是源码级别的，会随着源码的移动而跟随，而idea中的程序参数的配置会丢失。并且这里的args属性的配置的作用范围比较小，仅在当前测试类生效。
+`@SpringBootTest`注解中可以设置`properties`和`args`属性，这里的`args`属性的作用跟`idea`工具中自带的程序参数类似，只不过这里的配置是源码级别的，会随着源码的移动而跟随，而idea中的程序参数的配置会丢失。并且这里的`args`属性的配置的作用范围比较小，仅在当前测试类生效。
 
-application.yml
+`application.yml`
 
 ```yaml
 test:
   prop: testValue
 ```
 
-PropertiesAndArgsTest.java
+`PropertiesAndArgsTest.java`
 
 ```java
 // properties属性可以为当前测试用例添加临时的属性配置
@@ -710,7 +708,7 @@ class PropertiesAndArgsTest {
 
 [P80 实用开发篇-77-加载测试专用配置](https://www.bilibili.com/video/BV15b4y1a7yG?p=80)
 
-某些测试类中需要用到第三方的类，而其他测试类则不需要用到，这里可以在类上加载@Import({xxx.class， yyy.class})
+某些测试类中需要用到第三方的类，而其他测试类则不需要用到，这里可以在类上加载`@Import({xxx.class， yyy.class})`
 
 [P81 实用开发篇-78-测试类中启动web环境](https://www.bilibili.com/video/BV15b4y1a7yG?p=81)
 
@@ -724,7 +722,7 @@ class PropertiesAndArgsTest {
 
 [P86 实用开发篇-83-匹配响应头](https://www.bilibili.com/video/BV15b4y1a7yG?p=86)
 
-表现层BookController.java
+表现层`BookController.java`
 
 ```java
 @RestController
@@ -750,7 +748,7 @@ public class BookController {
 }
 ```
 
-对应的测试类WebTest.java
+对应的测试类`WebTest.java`
 
 ```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -844,15 +842,15 @@ public class WebTest {
 
 测试过程中对数据库的增删改操作的影响是否回滚，由下面两个注解控制，需要在测试类上加：
 
-@Transactional，@Rollback(value=true)：回滚，@Rollback(value=true)为默认值，也可以省略；
+`@Transactional`，`@Rollback(value=true)`：回滚，`@Rollback(value=true)`为默认值，也可以省略；
 
-@Transactional，@Rollback(value=false)：不回滚，跟什么注解都不加的效果一样。
+`@Transactional`，`@Rollback(value=false)`：不回滚，跟什么注解都不加的效果一样。
 
 [P88 实用开发篇-85-测试用例设置随机数据](https://www.bilibili.com/video/BV15b4y1a7yG?p=88)
 
 可以把测试用例中的属性值都按照一定规则设置成随机值，可以让测试结果更具有普适性。并且可以把测试用例的属性的随机规则写在配置文件中，方便更改。
 
-application.yml
+`application.yml`
 
 ```yaml
 testcase:
@@ -865,7 +863,7 @@ testcase:
     publicTime: ${random.long}
 ```
 
-BookCase.java
+`BookCase.java`
 
 ```java
 @Data
@@ -887,7 +885,7 @@ public class BookCase {
 
 [P89 实用开发篇-86-内置数据源](https://www.bilibili.com/video/BV15b4y1a7yG?p=89)
 
-在springboot项目中使用Druid数据源，需要先在pom.xml中加上Druid的依赖：
+在`springboot`项目中使用`Druid`数据源，需要先在`pom.xml`中加上`Druid`的依赖：
 
 ```xml
 <dependency>
@@ -897,7 +895,7 @@ public class BookCase {
 </dependency>
 ```
 
-然后在application.yml中有两种配置方法，两种方法实现的效果一样
+然后在`application.yml`中有两种配置方法，两种方法实现的效果一样
 
 ```yaml
 # 配法1：
@@ -919,9 +917,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource # 去掉type属性，Druid数据源依然会启用
 ```
 
-配法2去掉type属性后，再启动项目，发现Druid数据源依然启用了，这是由于引入了Druid数据源的依赖后，springboot会自动配置Druid。
+配法2去掉`type`属性后，再启动项目，发现`Druid`数据源依然启用了，这是由于引入了`Druid`数据源的依赖后，`springboot`会自动配置`Druid`。
 
-如果不引入Druid数据源的依赖，springboot默认的数据源是Hikari数据源
+如果不引入`Druid`数据源的依赖，`springboot`默认的数据源是`Hikari`数据源
 
 ```yaml
 # 默认为Hikari数据源
@@ -950,11 +948,11 @@ spring:
 
 [P90 实用开发篇-87-JdbcTemplate](https://www.bilibili.com/video/BV15b4y1a7yG?p=90)
 
-使用JdbcTemplate
+使用`JdbcTemplate`
 
-1. 在pom.xml中加入相关依赖
+1. 在`pom.xml`中加入相关依赖
 
-2. application.yml中配置数据源，另外还可以对JdbcTemplate进行一些简单的配置
+2. `application.yml`中配置数据源，另外还可以对`JdbcTemplate`进行一些简单的配置
 
    ```yaml
    # 配置数据库和连接池
@@ -1016,11 +1014,11 @@ spring:
 
 [P91 实用开发篇-88-H2数据库](https://www.bilibili.com/video/BV15b4y1a7yG?p=91)
 
-使用H2数据库
+使用`H2`数据库
 
-1. 在pom.xml中加入相关依赖
+1. 在`pom.xml`中加入相关依赖
 
-2. 在application.yml中配置数据源并且启用H2数据库的控制台
+2. 在`application.yml`中配置数据源并且启用`H2`数据库的控制台
 
    ```yaml
    server:
@@ -1042,15 +1040,15 @@ spring:
          path: /h2
    ```
 
-3. 在浏览器中输入访问H2控制台地址
+3. 在浏览器中输入访问`H2`控制台地址
 
    ![image-20220124170318554](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220124170318554.png)
 
-4. 输入默认密码：123456，然后点连接，会跳转到控制台主页
+4. 输入默认密码：`123456`，然后点连接，会跳转到控制台主页
 
    ![image-20220124170509519](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220124170509519.png)
 
-5. 可以写sql语句建表，并插入几条数据
+5. 可以写`sql`语句建表，并插入几条数据
 
    ```sql
    create table tbl_book(
@@ -1072,7 +1070,7 @@ spring:
 
    ![image-20220124171610075](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220124171610075.png)
 
-   查询tbl_book表中的数据
+   查询`tbl_book`表中的数据
 
    ```sql
    select * from tbl_book;
@@ -1080,7 +1078,7 @@ spring:
 
    ![image-20220124171707774](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220124171707774.png)
 
-6. 写代码连接H2数据库，需要注意启动测试类连接H2数据库的时候需要将之前的H2控制台的springboot程序先停止，否则会造成端口占用，测试类报错。
+6. 写代码连接`H2`数据库，需要注意启动测试类连接H2数据库的时候需要将之前的H2控制台的`springboot`程序先停止，否则会造成端口占用，测试类报错。
 
    测试类：
 
@@ -1117,7 +1115,7 @@ spring:
    }
    ```
 
-7. H2数据库线上运行时请务必关闭。
+7. `H2`数据库线上运行时请务必关闭。
 
     ```apl
     bind 0.0.0.0
@@ -1139,13 +1137,14 @@ spring:
 
 [P92 实用开发篇-89-redis下载安装与基本使用](https://www.bilibili.com/video/BV15b4y1a7yG?p=92)
 
-* windows版下载地址：[https://github.com/tporadowski/redis/releases](https://github.com/tporadowski/redis/releases)
+* `windows`版下载地址：[https://github.com/tporadowski/redis/releases](https://github.com/tporadowski/redis/releases)
 
-* linux版下载地址：[https://redis.io/](https://redis.io/)
+* `linux`版下载地址：[https://redis.io/](https://redis.io/)
 
-* 在linux上安装redis除了最原始的方法外，推荐使用docker-compose一键启动redis，非常方便
+* 在`linux`上安装redis除了最原始的方法外，推荐使用`docker-compose`一键启动`redis`，非常方便
 
-redis.conf
+`redis.conf`
+
 ```java
 bind 0.0.0.0
 protected-mode no
@@ -1161,7 +1160,8 @@ appendonly yes
 appendfsync everysec
 requirepass 123456
 ```
-docker-compose.yml
+`docker-compose.yml`
+
 ```yaml
 version: '3'
 
@@ -1178,9 +1178,9 @@ services:
     command: ["redis-server","/etc/redis/redis.conf"]
 ```
 
-我的redis安装在虚拟机中的linux系统上，可以通过以下两种方式测试连通性：
+我的`redis`安装在虚拟机中的linux系统上，可以通过以下两种方式测试连通性：
 
-1. 通过windows版redis自带的`redis-cli`来远程连接linux上的redis服务，指令如下：
+1. 通过`windows`版`redis`自带的`redis-cli`来远程连接`linux`上的redis服务，指令如下：
 
 ```bash
 redis-cli.exe -h 192.168.0.110 -p 6379 -a "123456" # 123456是密码
@@ -1190,7 +1190,7 @@ redis-cli.exe -h 192.168.0.110 -p 6379 -a "123456" # 123456是密码
 
 [P93 实用开发篇-90-SpringBoot整合Redis](https://www.bilibili.com/video/BV15b4y1a7yG?p=93)
 
-1. 在pom.xml中加入spring整合redis的依赖
+1. 在`pom.xml`中加入`spring`整合`redis`的依赖
 
     ```xml
     <!--springboot整合redis-->
@@ -1200,7 +1200,7 @@ redis-cli.exe -h 192.168.0.110 -p 6379 -a "123456" # 123456是密码
     </dependency>
     ```
 
-2. application.yml
+2. `application.yml`
 
     ```yaml
     spring:
@@ -1234,11 +1234,11 @@ redis-cli.exe -h 192.168.0.110 -p 6379 -a "123456" # 123456是密码
    }
    ```
 
-   注：这里如果使用RedisTemplate而不使用StringRedisTemplate，去redis客户端里面查看会发现键值包含\xac\xed\x00\x05t\x00\特殊字符，这是由于<font color="red">RedisTemplate<K, V>模板类在操作redis时默认使用JdkSerializationRedisSerializer来进行序列化。</font>而存取序列化的方式从`org.springframework.data.redis.serializer.JdkSerializationRedisSerializer`
+   注：这里如果使用`RedisTemplate`而不使用`StringRedisTemplate`，去`redis`客户端里面查看会发现键值包含\xac\xed\x00\x05t\x00\特殊字符，这是由于<font color="red">`RedisTemplate<K, V>`模板类在操作`redis`时默认使用`JdkSerializationRedisSerializer`来进行序列化。</font>而存取序列化的方式从`org.springframework.data.redis.serializer.JdkSerializationRedisSerializer`
 
    将序列化的方式改为 `org.springframework.data.redis.serializer.StringRedisSerializer` 会自动去掉`\xac\xed\x00\x05t\x00`前缀，所以有两种解决方法：
 
-   1. 直接使用StringRedisTemplate；
+   1. 直接使用`StringRedisTemplate`；
 
    2. 方案2 修改默认的序列化方式：
 
@@ -1259,11 +1259,11 @@ redis-cli.exe -h 192.168.0.110 -p 6379 -a "123456" # 123456是密码
 
 [P95 实用开发篇-92-SpringBoot操作Redis客户端实现技术切换（jedis）](https://www.bilibili.com/video/BV15b4y1a7yG?p=95)
 
-java操作redis底层有两种实现分别为lettuce和jedis，其中lettuce为springboot的RedisTemplate默认使用的技术。如果想要切换到jedis：
+`java`操作`redis`底层有两种实现分别为lettuce和jedis，其中`lettuce`为`springboot`的`RedisTemplate`默认使用的技术。如果想要切换到jedis：
 
-1. 引入jedis的jar包
+1. 引入`jedis`的jar包
 
-2. 在application.yml中加入配置
+2. 在`application.yml`中加入配置
 
    ```yaml
    spring:
@@ -1299,18 +1299,18 @@ java操作redis底层有两种实现分别为lettuce和jedis，其中lettuce为s
 .\mongo.exe
 ```
 
-会默认连接ip为localhost，port为27017的mongodb服务，连接成功会输出mongodb的版本等信息。
+会默认连接`ip`为`localhost`，`port`为`27017`的`mongodb`服务，连接成功会输出mongodb的版本等信息。
 
 [P98 实用开发篇-95-Mongodb基础操作](https://www.bilibili.com/video/BV15b4y1a7yG?p=98)
 
-由于黑窗口操作较为繁琐，这里推荐使用带图形化界面的客户端robo3t，启动robo3t，创建一个连接
+由于黑窗口操作较为繁琐，这里推荐使用带图形化界面的客户端`robo3t`，启动`robo3t`，创建一个连接
 
 ![image-20220125005852352](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125005852352.png)
 打开这个连接
 
 ![image-20220125005941396](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125005941396.png)
 
-右击左侧连接名，在右键菜单中选择Create Database，新建一个数据库
+右击左侧连接名，在右键菜单中选择`Create Database`，新建一个数据库
 
 ![image-20220125010258643](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125010258643.png)
 
@@ -1318,15 +1318,15 @@ java操作redis底层有两种实现分别为lettuce和jedis，其中lettuce为s
 
 ![image-20220125010907061](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125010907061.png)
 
-展开数据库名，右击Collections再新建一个Collection
+展开数据库名，右击`Collections`再新建一个`Collection`
 
 ![image-20220125011100353](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125011100353.png)
 
-填写collection名称
+填写`collection`名称
 
 ![image-20220125011142924](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125011142924.png)
 
-右击新建的Collection book，会弹出一个查询界面，可以在文本框中填写指令对Collection book进行操作
+右击新建的`Collection book`，会弹出一个查询界面，可以在文本框中填写指令对`Collection book`进行操作
 
 ![image-20220125011509450](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125011509450.png)
 
@@ -1353,7 +1353,7 @@ db.book.updateMany({name: "springboot"}, {$set:{name: "springboot2"}});
 
 [P99 实用开发篇-96-SpringBoot整合Mongodb](https://www.bilibili.com/video/BV15b4y1a7yG?p=99)
 
-在pom.xml中加入springboot整合MongoDB的依赖
+在`pom.xml`中加入`springboot`整合`MongoDB`的依赖
 
 ```xml
 <dependency>
@@ -1362,7 +1362,7 @@ db.book.updateMany({name: "springboot"}, {$set:{name: "springboot2"}});
 </dependency>
 ```
 
-在application.yml中进行MongoDB的配置
+在`application.yml`中进行`MongoDB`的配置
 
 ```yaml
 spring:
@@ -1407,11 +1407,11 @@ class MongodbApplicationTests {
 
 2. 安装
 
-   解压es的安装包，然后去bin目录下双击`elasticsearch.bat`启动es服务器，然后就可以去浏览器输入`http://localhost:9200/`
+   解压`es`的安装包，然后去bin目录下双击`elasticsearch.bat`启动`es`服务器，然后就可以去浏览器输入`http://localhost:9200/`
 
 ![image-20220125164120683](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125164120683.png)
 
-​		如果有正常的json返回值，那么说明es启动正常
+​		如果有正常的`json`返回值，那么说明`es`启动正常
 
 [P102 实用开发篇-99-ES索引操作](https://www.bilibili.com/video/BV15b4y1a7yG?p=102)
 
@@ -1419,19 +1419,19 @@ class MongodbApplicationTests {
 
 1. 安装IK分词器插件
 
-   > 我们希望es再新建索引的时候应用分词效果，所以需要先给es安装IK分词器插件
+   > 我们希望`es`再新建索引的时候应用分词效果，所以需要先给`es`安装`IK`分词器插件
 
    下载地址：[https://github.com/medcl/elasticsearch-analysis-ik/releases](https://github.com/medcl/elasticsearch-analysis-ik/releases)
 
-   在es的plugin目录下新建一个ik文件夹（建文件夹是为了方便管理），然后把下载好的ik分词器压缩包中的内容解压到ik目录下
+   在`es`的`plugin`目录下新建一个ik文件夹（建文件夹是为了方便管理），然后把下载好的`ik`分词器压缩包中的内容解压到ik目录下
 
 ![image-20220125165532370](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125165532370.png)
 
-​		关闭当前es启动的黑窗口，去es的bin目录下，双击`elasticsearch.bat`，重新启动es
+​		关闭当前`es`启动的黑窗口，去`es`的bin目录下，双击`elasticsearch.bat`，重新启动`es`
 
 2. 新建索引
 
-   打开postman，发送一个PUT请求，新建一个books索引
+   打开`postman`，发送一个`PUT`请求，新建一个`books`索引
 
    请求参数
 
@@ -1500,7 +1500,7 @@ class MongodbApplicationTests {
 
 ![image-20220125203418217](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220125203418217.png)
 
-如果上面的方法也不能解决，检查一下自己的es安装目录所在磁盘的可用空间是否太小，默认必须大于5%才可以，比如磁盘空间500G, 需要至少25G的可用空间才可以。后来清了磁盘大于5%也不行，后来用这个方法解决了：[Elasticsearch flood stage disk watermark exceeded](https://www.hellopp.cn/page/61854946a69f0e0ba433fe39)
+如果上面的方法也不能解决，检查一下自己的`es`安装目录所在磁盘的可用空间是否太小，默认必须大于`5%`才可以，比如磁盘空间500G, 需要至少`25G`的可用空间才可以。后来清了磁盘大于`5%`也不行，后来用这个方法解决了：[Elasticsearch flood stage disk watermark exceeded](https://www.hellopp.cn/page/61854946a69f0e0ba433fe39)
 
 2. 查询文档
 
@@ -1522,7 +1522,7 @@ class MongodbApplicationTests {
 
 4. 修改文档
 
-   将_id为221432414的文档的name修改的值修改为`springboot 非常好`
+   将`_id`为`221432414`的文档的`name`修改的值修改为`springboot 非常好`
 
    先查询一下
 
@@ -1538,9 +1538,9 @@ class MongodbApplicationTests {
 
    发现修改后的文档，另外两个没有修改的属性没有了，这不是期望的效果，这种请求的修改方式是全覆盖方式的修改。
 
-   如果要想只修改文档中name属性的值，需要使用新的请求方式（操作之前先将_id为221432414的文档数据恢复一下）
+   如果要想只修改文档中`name`属性的值，需要使用新的请求方式（操作之前先将`_id`为`221432414`的文档数据恢复一下）
 
-   注意：<font color="red">这里发送的是POST请求，而上面的全量修改发送的是PUT请求</font>
+   注意：<font color="red">这里发送的是`POST`请求，而上面的全量修改发送的是`PUT`请求</font>
 
    ![image-20220126011856475](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220126011856475.png)
 
@@ -1554,9 +1554,9 @@ class MongodbApplicationTests {
 
 [P106 实用开发篇-103-查询文档](https://www.bilibili.com/video/BV15b4y1a7yG?p=106)
 
-参考整合h2、redis、mongodb的方式，整合es的时候应该先在pom.xml中加入spring整合es的依赖，`spring-boot-starter-data-elasticsearch`，然后再去application.yml中编写es的配置，最后再去测试类里面注入es的template对象，进行相关操作。可是需要注意的是，springboot整合es有两套整合方案，一个是整合低级别的es客户端，另一个是整合高级别的es客户端。而开头所说的是springboot整合低级别的方式，这里不采用这种方式。直接整合高级别的es客户端，分为以下几个步骤：
+参考整合`h2`、`redis`、`mongodb`的方式，整合es的时候应该先在`pom.xml`中加入`spring`整合`es`的依赖，`spring-boot-starter-data-elasticsearch`，然后再去`application.yml`中编写es的配置，最后再去测试类里面注入es的`template`对象，进行相关操作。可是需要注意的是，`springboot`整合es有两套整合方案，一个是整合低级别的`es`客户端，另一个是整合高级别的`es`客户端。而开头所说的是`springboot`整合低级别的方式，这里不采用这种方式。直接整合高级别的`es`客户端，分为以下几个步骤：
 
-1. 在pom.xml中加入es的依赖，由于测试的过程中还要用到对象转json字符串，所以这里把json解析的依赖也一同加上
+1. 在`pom.xml`中加入`es`的依赖，由于测试的过程中还要用到对象转`json`字符串，所以这里把`json`解析的依赖也一同加上
 
     ```xml
     <dependency>
@@ -1569,7 +1569,7 @@ class MongodbApplicationTests {
     </dependency>
     ```
 
-2. 整合高级别的es客户端，意味着springboot没有提供默认的配置，所以就不能在application.yml中配置有关访问es客户端的url等参数了，这里直接编写测试类，采用硬编码的方式指定这些参数。
+2. 整合高级别的`es`客户端，意味着`springboot`没有提供默认的配置，所以就不能在`application.yml`中配置有关访问`es`客户端的`url`等参数了，这里直接编写测试类，采用硬编码的方式指定这些参数。
 
    ```java
    @SpringBootTest
@@ -1706,9 +1706,9 @@ class MongodbApplicationTests {
 
 [P108 实用开发篇-105-Spring缓存使用方式](https://www.bilibili.com/video/BV15b4y1a7yG?p=108)
 
-先自己用java的HashMap模拟一个缓存
+先自己用`java`的`HashMap`模拟一个缓存
 
-BookController.java
+`BookController.java`
 
 ```java
 @GetMapping("{id}")
@@ -1718,7 +1718,7 @@ public R getById(@PathVariable Integer id) {
 }
 ```
 
-BookServiceImpl.java
+`BookServiceImpl.java`
 
 ```java
 @Override
@@ -1738,9 +1738,9 @@ public Book getById(Serializable id) {
 
 ##### springboot_16_01_02_cache_book_simple
 
-使用spring中自带的缓存技术
+使用`spring`中自带的缓存技术
 
-* 在pom.xml中添加如下依赖
+* 在`pom.xml`中添加如下依赖
   ```xml
   <!--cache-->
   <dependency>
@@ -1749,9 +1749,9 @@ public Book getById(Serializable id) {
   </dependency>
   ```
 
-* 在springboot启动类上加@EnableCaching注解
+* 在`springboot`启动类上加`@EnableCaching`注解
 
-* 在业务层要使用缓存的方法上加上@Cacheable(value = "cacheSpace", key = "#id")注解，如下所示
+* 在业务层要使用缓存的方法上加上`@Cacheable(value = "cacheSpace", key = "#id")`注解，如下所示
 
   ```java
   @Cacheable(value = "cacheSpace", key = "#id")
@@ -1761,7 +1761,7 @@ public Book getById(Serializable id) {
   }
   ```
 
-  其中value表示缓存空间，key=“#id”，表示将方法参数id的值作为缓存中的一个key。
+  其中`value`表示缓存空间，`key=“#id”`，表示将方法参数`id`的值作为缓存中的一个`key`。
 
 ##### springboot_16_01_03_cache_smscode_simple
 
@@ -1849,31 +1849,30 @@ public Book getById(Serializable id) {
             boolean checkCode(SMSCode smsCode);
         }
         ```
-    ```
         
-    业务层接口实现类`SMSCodeServiceImpl.java`
+        业务层接口实现类`SMSCodeServiceImpl.java`
         
-    ​```java
+        ```java
         @Service
         public class SMSCodeServiceImpl implements SMSCodeService {
             @Autowired
-        private CodeUtils codeUtils;
-            
+            private CodeUtils codeUtils;
+        
             @Override
             public String sendCodeToSMS(String phone) {
                 return codeUtils.generateCode(phone);
-        }
+            }
         
             @Override
             public boolean checkCode(SMSCode smsCode) {
                 return false;
             }
         }
-    ```
+        ```
+    
+2. 加入`spring`默认的缓存功能
 
-2. 加入spring默认的缓存功能
-
-    * 在pom.xml中添加缓存依赖
+    * 在`pom.xml`中添加缓存依赖
 
       ```xml
       <!--cache-->
@@ -1883,7 +1882,7 @@ public Book getById(Serializable id) {
       </dependency>
       ```
 
-    * 在SMSCodeServiceImpl的sendCodeToSMS()方法上添加@CachePut(value = "smsCode", key = "#phone")，如下所示
+    * 在`SMSCodeServiceImpl`的`sendCodeToSMS()`方法上添加`@CachePut(value = "smsCode", key = "#phone")`，如下所示
 
       ```java
       @Override
@@ -1898,7 +1897,7 @@ public Book getById(Serializable id) {
       }
       ```
 
-    * 编写checkCode()方法：校验验证码是否正确
+    * 编写`checkCode()`方法：校验验证码是否正确
 
       错误的写法：
 
@@ -1920,9 +1919,9 @@ public Book getById(Serializable id) {
       }
       ```
 
-      在getCodeByPhoneFromCache()方法上加了@Cacheable(value = "cacheSpace", key = "#phone")，然后在checkCode()方法中调用getCodeByPhoneFromCache()方法，这种方式看似是正确的，实际上@Cacheable注解不会生效，导致getCodeByPhoneFromCache()的返回值始终是null。<font color="red">这是由于被spring管理的类内的方法互调注解不会被解析。</font>
+      在`getCodeByPhoneFromCache()`方法上加了`@Cacheable(value = "cacheSpace", key = "#phone")`，然后在`checkCode()`方法中调用`getCodeByPhoneFromCache()`方法，这种方式看似是正确的，实际上`@Cacheable`注解不会生效，导致`getCodeByPhoneFromCache()`的返回值始终是`null`。<font color="red">这是由于被`spring`管理的类内的方法互调注解不会被解析。</font>
 
-      由此可以想到解决办法，将getCodeByPhoneFromCache()放到另外一个类（这里为了方便起见，直接放到CodeUtils类中），并将这个类交由spring管理（在类上面加@Component注解），然后再用codeUtils.getCodeByPhoneFromCache(smsCode.getPhone())即可正常从缓存中拿到值。代码如下：
+      由此可以想到解决办法，将`getCodeByPhoneFromCache()`放到另外一个类（这里为了方便起见，直接放到`CodeUtils`类中），并将这个类交由`spring`管理（在类上面加`@Component`注解），然后再用`codeUtils.getCodeByPhoneFromCache(smsCode.getPhone())`即可正常从缓存中拿到值。代码如下：
 
       ```java
       @Override
@@ -1940,9 +1939,9 @@ public Book getById(Serializable id) {
 
 [P111 实用开发篇-108-变更缓存供应商Ehcache](https://www.bilibili.com/video/BV15b4y1a7yG?p=111)
 
-基于验证码案例的代码和配置，使用ehcache替换spring默认的simple缓存
+基于验证码案例的代码和配置，使用`ehcache`替换`spring`默认的`simple`缓存
 
-1. 在pom.xml中加入ehcache的依赖
+1. 在`pom.xml`中加入`ehcache`的依赖
 
    ```xml
    <!--ehcache-->
@@ -1952,7 +1951,7 @@ public Book getById(Serializable id) {
    </dependency>
    ```
 
-2. 在application.yml中加入如下配置
+2. 在`application.yml`中加入如下配置
 
    ```yaml
    spring:
@@ -1963,7 +1962,7 @@ public Book getById(Serializable id) {
          # config: ehcache-xxx.xml
    ```
 
-3. 在resources目录下新建一个ehcache.xml配置文件，内容如下：
+3. 在`resources`目录下新建一个`ehcache.xml`配置文件，内容如下：
 
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
@@ -2013,9 +2012,9 @@ public Book getById(Serializable id) {
 
 [P113 实用开发篇-109-变更缓存供应商Redis](https://www.bilibili.com/video/BV15b4y1a7yG?p=113)
 
-基于验证码案例的代码和配置，使用redis替换spring默认的simple缓存
+基于验证码案例的代码和配置，使用`redis`替换`spring`默认的`simple`缓存
 
-1. 在pom.xml中加入redis的依赖
+1. 在`pom.xml`中加入`redis`的依赖
 
    ```xml
    <!--redis-->
@@ -2025,7 +2024,7 @@ public Book getById(Serializable id) {
    </dependency>
    ```
 
-2. 在application.yml中加入如下配置
+2. 在`application.yml`中加入如下配置
 
    ```yaml
    spring:
@@ -2053,9 +2052,9 @@ public Book getById(Serializable id) {
 
 [P115 实用开发篇-111-变更缓存供应商memcached](https://www.bilibili.com/video/BV15b4y1a7yG?p=115)
 
-基于验证码案例的代码和配置，使用memcached替换spring默认的simple缓存，memcached最新的客户端技术是xmemcached
+基于验证码案例的代码和配置，使用`memcached`替换`spring`默认的`simple`缓存，`memcached`最新的客户端技术是`xmemcached`
 
-1. 在pom.xml中加入xmemcached的依赖
+1. 在`pom.xml`中加入`xmemcached`的依赖
 
    ```xml
    <!-- xmemcached -->
@@ -2066,9 +2065,9 @@ public Book getById(Serializable id) {
    </dependency>
    ```
 
-2. 由于springboot并未收录memcached，所以只能通过硬编码的方式完成相关配置
+2. 由于`springboot`并未收录`memcached`，所以只能通过硬编码的方式完成相关配置
 
-   XMemcachedConfig.java
+   `XMemcachedConfig.java`
 
    ```java
    @Component
@@ -2082,7 +2081,7 @@ public Book getById(Serializable id) {
    }
    ```
 
-   SMSCodeServiceImpl.java
+   `SMSCodeServiceImpl.java`
 
    ```java
    @Service
@@ -2119,9 +2118,9 @@ public Book getById(Serializable id) {
 
    直接启动项目，并且验证码获取和验证的过程不报错，说明缓存替换成成功。
 
-到这里整合memcached算是成功了，可是配置都写死在代码中了，不太方便，这里可以结合前面的Configuration属性绑定的内容将配置抽取到application.yml文件中。
+到这里整合`memcached`算是成功了，可是配置都写死在代码中了，不太方便，这里可以结合前面的`Configuration`属性绑定的内容将配置抽取到`application.yml`文件中。
 
-1. 先定义一个实体类XMemcachedProperties，保存XMemcached的配置属性，并加上@Component和@ConfigurationProperties(prefix = "memcached")注解
+1. 先定义一个实体类`XMemcachedProperties`，保存`XMemcached`的配置属性，并加上`@Component`和`@ConfigurationProperties(prefix = "memcached")`注解
 
    ```java
    @Component
@@ -2134,7 +2133,7 @@ public Book getById(Serializable id) {
    }
    ```
 
-2. 在application.yml中加入如下配置：
+2. 在`application.yml`中加入如下配置：
 
    ```yaml
    memcached:
@@ -2143,7 +2142,7 @@ public Book getById(Serializable id) {
      opTimeout: 3000
    ```
 
-3. 在XMemcachedConfig类中使用XMemcachedProperties类中封装的配置属性
+3. 在`XMemcachedConfig`类中使用`XMemcachedProperties`类中封装的配置属性
 
    ```java
    @Component
@@ -2164,11 +2163,11 @@ public Book getById(Serializable id) {
 
 ##### springboot_16_01_07_cache_smscode_jetcache
 
-[P116实用开发篇-112-jetcache远程缓存方案](https://www.bilibili.com/video/BV15b4y1a7yG?p=116)
+[P116 实用开发篇-112-jetcache远程缓存方案](https://www.bilibili.com/video/BV15b4y1a7yG?p=116)
 
-基于验证码案例的代码和配置，使用redis替换spring默认的simple缓存
+基于验证码案例的代码和配置，使用`redis`替换`spring`默认的`simple`缓存
 
-1. 在pom.xml中加入redis的依赖
+1. 在`pom.xml`中加入`redis`的依赖
 
    ```xml
    <!--redis-->
@@ -2178,7 +2177,7 @@ public Book getById(Serializable id) {
    </dependency>
    ```
 
-2. 在application.yml中加入如下配置
+2. 在`application.yml`中加入如下配置
 
    ```yaml
    spring:
@@ -2198,17 +2197,17 @@ public Book getById(Serializable id) {
 
    直接启动项目，并且验证码获取和验证的过程不报错，说明缓存替换成成功。
 
-[P117实用开发篇-113-jetcache本地缓存方案](https://www.bilibili.com/video/BV15b4y1a7yG?p=117)
+[P117 实用开发篇-113-jetcache本地缓存方案](https://www.bilibili.com/video/BV15b4y1a7yG?p=117)
 
-jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程两种缓存，所谓本地就是使用HashMap类似的技术做的缓存，远程就是可以连接到redis。
+`jetcache`是阿里巴巴公司的缓存技术，可以同时支持本地和远程两种缓存，所谓本地就是使用`HashMap`类似的技术做的缓存，远程就是可以连接到`redis`。
 
-基于验证码案例的代码和配置，使用jetcache替换spring默认的simple缓存
+基于验证码案例的代码和配置，使用`jetcache`替换`spring`默认的`simple`缓存
 
-> <font color="red">springboot整合jetcache的时候使用2.6.3版本会报循环依赖的错误，我在网上搜索了一个解决循环依赖的方法，链接地址：[https://blog.csdn.net/chengxuyuanjava123/article/details/122459521](https://blog.csdn.net/chengxuyuanjava123/article/details/122459521)较复杂，仅供参考。</font>教程的弹幕中有个小伙伴讲springboot 2.5.4版本和jetcache整合不会出现这个问题，我就尝试了一下，居然真的可以，所以我就暂时使用了这个简单的方法。使用了springboot 2.5.4，有更好的办法解决这个问题的小伙伴，可以评论区告知，谢谢。
+> <font color="red">springboot整合jetcache的时候使用2.6.3版本会报循环依赖的错误，我在网上搜索了一个解决循环依赖的方法，链接地址：[https://blog.csdn.net/chengxuyuanjava123/article/details/122459521](https://blog.csdn.net/chengxuyuanjava123/article/details/122459521)较复杂，仅供参考。</font>教程的弹幕中有个小伙伴讲`springboot 2.5.4`版本和`jetcache`整合不会出现这个问题，我就尝试了一下，居然真的可以，所以我就暂时使用了这个简单的方法。使用了`springboot 2.5.4`，有更好的办法解决这个问题的小伙伴，可以评论区告知，谢谢。
 
-首先用jetcache的远程方案，也就是底层用redis作为真正的缓存工具。
+首先用`jetcache`的远程方案，也就是底层用`redis`作为真正的缓存工具。
 
-1. 在pom.xml中加入jetcache的依赖
+1. 在`pom.xml`中加入`jetcache`的依赖
 
    ```xml
    <!--jetcache-->
@@ -2219,7 +2218,7 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    </dependency>
    ```
 
-2. 在application.yml中加入如下配置
+2. 在`application.yml`中加入如下配置
 
    ```yaml
    # 配置jetcache
@@ -2249,9 +2248,9 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    #          maxTotal: 50
    ```
    
-3. 在springboot启动类上加`@EnableCreateCacheAnnotation`注解
+3. 在`springboot`启动类上加`@EnableCreateCacheAnnotation`注解
 
-4. 在业务层类SMSCodeServiceImpl中使用缓存
+4. 在业务层类`SMSCodeServiceImpl`中使用缓存
 
    ```java
    @Service
@@ -2288,9 +2287,9 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
 
    直接启动项目，并且验证码获取和验证的过程不报错，说明缓存替换成成功。
 
-再使用jetcache的本地方案
+再使用`jetcache`的本地方案
 
-1. 修改application.yml中jetcache的配置
+1. 修改`application.yml`中`jetcache`的配置
 
    ```yaml
    # 配置jetcache
@@ -2326,7 +2325,7 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    #          maxTotal: 50
    ```
 
-2. 将SMSCodeServiceImpl.java中的@CreateCache注解中指定cacheType = CacheType.LOCAL
+2. 将`SMSCodeServiceImpl.java`中的`@CreateCache`注解中指定`cacheType = CacheType.LOCAL`
 
    ```java
    @Service
@@ -2368,17 +2367,17 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
 
 如果远程和本地两种方案都启用，只需要将`SMSCodeServiceImpl.java`中的`@CreateCache`注解中指定`cacheType = CacheType.BOTH`即可。
 
-另附：jetcache详细配置属性
+另附：`jetcache`详细配置属性
 
 ![image-20220214140351959](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214140351959.png)
 
 ##### springboot_16_01_08_cache_smscode_jetcache_method
 
-[P118实用开发篇-114-jetcache方法缓存](https://www.bilibili.com/video/BV15b4y1a7yG?p=118)
+[P118 实用开发篇-114-jetcache方法缓存](https://www.bilibili.com/video/BV15b4y1a7yG?p=118)
 
 `jetcache`也可以和`spring`默认的`simple-cache`一样在方法上加上缓存注解。这里为了体现对缓存的增删改查更多的操作，基于`springboot_16_01_02_cache_Book_simple`案例的代码进行修改。
 
-1. 在pom.xml中加入jetcache的依赖
+1. 在`pom.xml`中加入`jetcache`的依赖
 
    ```xml
    <!--jetcache-->
@@ -2389,7 +2388,7 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    </dependency>
    ```
 
-2. 在application.yml中加入如下配置
+2. 在`application.yml`中加入如下配置
 
    ```yaml
    # 配置jetcache
@@ -2421,7 +2420,7 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    ```
 
 
-3. 在springboot的启动类上加`@EnableMethodCache(basePackages = "top.jacktgq")`，其中`basePackages=“top.jacktgq"`中的包名需要覆盖到用到缓存的业务类，另外`@EnableMethodCache`注解需要依赖`@EnableCreateCacheAnnotation`注解。如下所示。
+3. 在`springboot`的启动类上加`@EnableMethodCache(basePackages = "top.jacktgq")`，其中`basePackages=“top.jacktgq"`中的包名需要覆盖到用到缓存的业务类，另外`@EnableMethodCache`注解需要依赖`@EnableCreateCacheAnnotation`注解。如下所示。
 
    ```	java
    @SpringBootApplication
@@ -2437,14 +2436,14 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    ```
 
 
-4. 在BookServiceImpl类中添加方法缓存注解
+4. 在`BookServiceImpl`类中添加方法缓存注解
 
    * 这里需要参考`springboot_16_01_03_cache_smscode`，在`CodeUtils.java`的`getCodeByPhoneFromCache()`方法上添加`@Cached(name = "smsCode", key = "#", expire = 10)`，其中`name`和之前的spring自带缓存的`@Cacheable`注解中的`value`一样都表示缓存的命名空间，`key`和`@Cacheable`中的`key`一样，`expire`表示缓存失效时间，默认单位为秒，不指定就是永不失效。如下所示。
 
    * 如果在修改操作后想更新缓存，可以在修改方法上加上`@CacheUpdate(name = "book_", key = "#book.id", value = "#book")`注解；
 
    * 如果想在删除操作后删除对应缓存，可以在删除方法上加上`@CacheInvalidate(name = "book_", key = "#id")`注解。
-   * 如果数据库由多个业务系统共用，一个系统对数据库的修改不能同步到另一个系统的缓存，这时就需要使用的到@CacheRefresh(refresh = 5)，其中refresh=5，表示每隔5秒钟刷新一次缓存。
+   * 如果数据库由多个业务系统共用，一个系统对数据库的修改不能同步到另一个系统的缓存，这时就需要使用的到`@CacheRefresh(refresh = 5)`，其中`refresh=5`，表示每隔5秒钟刷新一次缓存。
 
    具体代码如下：
 
@@ -2476,12 +2475,12 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    }
    ```
 
-   > <font color="red">注：如果这里被@Cache注解修饰的方法的返回值为普通的实体类，那么这个实体类需要实现Serializable接口，并且在application.yml配置文件的jetcache下配置      keyConvertor: fastjson, valueEncoder: java, valueDecoder: java，否则会报错。</font>
+   > <font color="red">注：如果这里被`@Cache`注解修饰的方法的返回值为普通的实体类，那么这个实体类需要实现`Serializable`接口，并且在`application.yml`配置文件的`jetcache`下配置      `keyConvertor: fastjson`, `valueEncoder: java`, `valueDecoder: java`，否则会报错。</font>
    >
-   > 1. Book实体类要实现Serializable接口
+   > 1. Book实体类要实现`Serializable`接口
    >
    >    ```java
-   >   @Component
+   >     @Component
    >    @Data
    >    public class Book implements Serializable {
    >        private Integer id;
@@ -2491,7 +2490,7 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    >    }
    >    ```
    >
-   > 2. 在application.yml配置文件的jetcache下配置valueEncoder: java, valueDecoder: java
+   > 2. 在`application.yml`配置文件的`jetcache`下配置`valueEncoder: java`, `valueDecoder: java`
    >
    >    ```yaml
    >    # 配置jetcache
@@ -2522,13 +2521,13 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
 
 ##### springboot_16_01_09_cache_smscode_j2cache_ehcache_redis
 
-[P119实用开发篇-115-j2cache基本操作](https://www.bilibili.com/video/BV15b4y1a7yG?p=119)
+[P119 实用开发篇-115-j2cache基本操作](https://www.bilibili.com/video/BV15b4y1a7yG?p=119)
 
-> j2cache是一个缓存整合框架，可以提供缓存的整合方案，使个各种缓存搭配使用，自身不提供缓存功能。
+> `j2cache`是一个缓存整合框架，可以提供缓存的整合方案，使个各种缓存搭配使用，自身不提供缓存功能。
 
-这里基于验证码案例的代码和配置，使用j2cache整合ehcache和redis替换spring原有的simple缓存。
+这里基于验证码案例的代码和配置，使用`j2cache`整合`ehcache`和`redis`替换`spring`原有的`simple`缓存。
 
-1. 在pom.xml中加入j2cache的相关依赖
+1. 在`pom.xml`中加入`j2cache`的相关依赖
 
    ```xml
    <!--j2cache-->
@@ -2550,9 +2549,9 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    </dependency>
    ```
 
-2. 在resources目录下创建配置文件
+2. 在`resources`目录下创建配置文件
 
-   ehcache.xml
+   `ehcache.xml`
 
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
@@ -2591,7 +2590,7 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    </ehcache>
    ```
 
-   j2cache.properties
+   `j2cache.properties`
 
    ```properties
    # 一级缓存
@@ -2611,11 +2610,11 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    j2cache.broadcast = net.oschina.j2cache.cache.support.redis.SpringRedisPubSubPolicy
    ```
 
-   更详细的配置内容可以去j2cache的jar包路径下寻得
+   更详细的配置内容可以去`j2cache`的`jar`包路径下寻得
 
    ![image-20220214181819635](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214181819635.png)
 
-3. 在SMSCodeServiceImpl类中编写j2cache相关代码
+3. 在`SMSCodeServiceImpl`类中编写`j2cache`相关代码
 
    ```java
    @Service
@@ -2654,7 +2653,7 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
    Caused by: net.sf.ehcache.CacheException: Another unnamedCacheManager already exists in the same VM. Please provide uniquenames for each CacheManagerxxxxxxxxxx1 1Caused by: net.sf.ehcache.CacheException: Another unnamed CacheManager alreadyCaused by: net.sf.ehcache.CacheException: Another unnamedCacheManager already exists in the same VM. Please provide uniquenames for each CacheManager
    ```
 
-   <font color="red">检查一下springboot启动类上面有没有多余的缓存注解，如@EnableCaching，这会跟j2cache发生冲突，j2cache不需要在springboot启动类上面加注解，复制项目的时候需要小心。</font>
+   <font color="red">检查一下`springboot`启动类上面有没有多余的缓存注解，如`@EnableCaching`，这会跟`j2cache`发生冲突，`j2cache`不需要在`springboot`启动类上面加注解，复制项目的时候需要小心。</font>
 
 4. 消除一些警告日志
 
@@ -2670,15 +2669,15 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
      SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
      ```
 
-     冲突的意思是slf4j-simple和logback-classic发生了冲突，这里选择保留springboot默认的logback日志，排除slf4j-simple。打开maven面板，选中项目，然后点击显示依赖项按钮，
+     冲突的意思是`slf4j-simple`和`logback-classic`发生了冲突，这里选择保留`springboot`默认的`logback`日志，排除`slf4j-simple`。打开`maven`面板，选中项目，然后点击显示依赖项按钮，
 
      ![image-20220214213153252](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214213153252.png)
 
-     会弹出一个依赖项拓扑图，在拓扑图中寻找到slf4j-simple的上层包为j2cache-core
+     会弹出一个依赖项拓扑图，在拓扑图中寻找到`slf4j-simple`的上层包为`j2cache-core`
 
      ![image-20220214213640009](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220214213640009.png)
 
-     去pom.xml中的j2cache-core的依赖中排除slf4j-simple即可
+     去`pom.xml`中的`j2cache-core`的依赖中排除`slf4j-simple`即可
 
      ```xml
      <dependency>
@@ -2696,9 +2695,9 @@ jetcache是阿里巴巴公司的缓存技术，可以同时支持本地和远程
 
      再启动项目，就不会再报这个警告了。
 
-[P120实用开发篇-116-j2cache相关配置](https://www.bilibili.com/video/BV15b4y1a7yG?p=120)
+[P120 实用开发篇-116-j2cache相关配置](https://www.bilibili.com/video/BV15b4y1a7yG?p=120)
 
-在application.yml中对j2cache的其他配置
+在`application.yml`中对`j2cache`的其他配置
 
 ```yaml
 # 指定命名空间，可以作为key的公共前缀
@@ -2711,11 +2710,11 @@ j2cache.l2-cache-open = false
 
 ##### springboot_16_02_01_task_quartz
 
-[P121实用开发篇-117-springboot整合quartz](https://www.bilibili.com/video/BV15b4y1a7yG?p=121)
+[P121 实用开发篇-117-springboot整合quartz](https://www.bilibili.com/video/BV15b4y1a7yG?p=121)
 
-springboot整合quartz分为以下几个步骤：
+`springboot`整合`quartz`分为以下几个步骤：
 
-1. 在pom.xml中加入Springboot整合quartz的依赖
+1. 在`pom.xml`中加入`Springboot`整合`quartz`的依赖
 
    ```xml
    <!--quartz-->
@@ -2725,14 +2724,14 @@ springboot整合quartz分为以下几个步骤：
    </dependency>
    ```
 
-2. 在springboot程序启动类上加@EnableScheduling注解，开启定时任务功能
+2. 在`springboot`程序启动类上加`@EnableScheduling`注解，开启定时任务功能
 
    ```java
    //开启定时任务功能
    @EnableScheduling
    ```
 
-3. 编写一个类MyQuartz继承QuartzJobBean，作为Quartz要执行的工作（任务）
+3. 编写一个类`MyQuartz`继承`QuartzJobBean`，作为`Quartz`要执行的工作（任务）
 
    ```java
    public class MyQuartz extends QuartzJobBean {
@@ -2743,7 +2742,7 @@ springboot整合quartz分为以下几个步骤：
    }
    ```
 
-4. 编写一个QuartzConfig类，配置Quartz具体的执行过程，并加上@Configuration注解
+4. 编写一个`QuartzConfig`类，配置`Quartz`具体的执行过程，并加上`@Configuration`注解
 
    ```java
    @Configuration
@@ -2763,22 +2762,22 @@ springboot整合quartz分为以下几个步骤：
    }
    ```
 
-5. 直接启动springboot程序，任务便会自动执行
+5. 直接启动`springboot`程序，任务便会自动执行
 
 ##### springboot_16_02_02_task_spring
 
-[P122实用开发篇-118-springboot整合task](https://www.bilibili.com/video/BV15b4y1a7yG?p=122)
+[P122 实用开发篇-118-springboot整合task](https://www.bilibili.com/video/BV15b4y1a7yG?p=122)
 
-使用springboot自带的定时任务
+使用`springboot`自带的定时任务
 
-1. 在springboot程序启动类上加@EnableScheduling注解，开启定时任务功能
+1. 在`springboot`程序启动类上加`@EnableScheduling`注解，开启定时任务功能
 
    ```java
    //开启定时任务功能
    @EnableScheduling
    ```
 
-2. 编写一个任务类，加上@Component注解，要定时执行的方法上加上@Scheduled(cron = "0/3 * * * * ?")，用cron表达式指定执行的周期
+2. 编写一个任务类，加上`@Component`注解，要定时执行的方法上加上`@Scheduled(cron = "0/3 * * * * ?")`，用`cron`表达式指定执行的周期
 
    ```java
    @Component
@@ -2790,9 +2789,9 @@ springboot整合quartz分为以下几个步骤：
    }
    ```
 
-3. 直接启动springboot程序，任务便会自动执行
+3. 直接启动`springboot`程序，任务便会自动执行
 
-4. Spring Task还可以在application.yml文件中进行更细致的配置
+4. `Spring Task`还可以在`application.yml`文件中进行更细致的配置
 
    ```yaml
    spring:
@@ -2814,19 +2813,19 @@ springboot整合quartz分为以下几个步骤：
 
 ##### springboot_16_03_mail
 
-[P123实用开发篇-119-发送简单邮件](https://www.bilibili.com/video/BV15b4y1a7yG?p=123)
+[P123 实用开发篇-119-发送简单邮件](https://www.bilibili.com/video/BV15b4y1a7yG?p=123)
 
-完成代码发邮件案例之前先准备好两个邮箱，这里采用一个QQ邮箱和一个163邮箱，后面用这两个邮箱互相发送消息。
+完成代码发邮件案例之前先准备好两个邮箱，这里采用一个`QQ`邮箱和一个`163`邮箱，后面用这两个邮箱互相发送消息。
 
-代码发邮件采用的是SMTP协议，收邮件采用的是POP3或者IMAP协议，使用代码发邮件需要在配置文件中填写账号和授权码，授权码需要去邮箱管理后台界面进行设置。
+代码发邮件采用的是`SMTP`协议，收邮件采用的是`POP3`或者`IMAP`协议，使用代码发邮件需要在配置文件中填写账号和授权码，授权码需要去邮箱管理后台界面进行设置。
 
-* QQ邮箱开启POP3/SMTP服务，获取授权码
+* `QQ`邮箱开启`POP3/SMTP`服务，获取授权码
 
-  1. 进入QQ邮箱主页，找到设置，然后点击账户选项
+  1. 进入`QQ`邮箱主页，找到设置，然后点击账户选项
 
      ![image-20220215014949660](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215014949660.png)
 
-  2. 鼠标滚轮往下滑，找到POP3/SMTP服务开启的地方
+  2. 鼠标滚轮往下滑，找到`POP3/SMTP`服务开启的地方
 
      ![image-20220215015249141](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215015249141.png)
 
@@ -2836,13 +2835,13 @@ springboot整合quartz分为以下几个步骤：
 
   
 
-* 163邮箱开启POP3/SMTP服务，获取授权码
+* `163`邮箱开启`POP3/SMTP`服务，获取授权码
 
-  1. 进入163邮箱主页，点击设置，选择POP3/SMTP/IMAP
+  1. 进入`163`邮箱主页，点击设置，选择`POP3/SMTP/IMAP`
 
      ![image-20220215015802106](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215015802106.png)
 
-  2. 点击开启IMAP/SMTP服务
+  2. 点击开启`IMAP/SMTP`服务
 
      ![image-20220215020216002](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215020216002.png)
 
@@ -2850,9 +2849,9 @@ springboot整合quartz分为以下几个步骤：
 
      ![image-20220215020459960](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215020459960.png)
 
-spring整合mail
+`spring`整合`mail`
 
-1. 在pom.xml中加入spring整合mail的依赖
+1. 在`pom.xml`中加入`spring`整合`mail`的依赖
 
    ```xml
    <!--mail-->
@@ -2862,7 +2861,7 @@ spring整合mail
    </dependency>
    ```
 
-2. 在application.yml中添加邮箱的相关配置
+2. 在`application.yml`中添加邮箱的相关配置
 
    ```yaml
    spring:
@@ -2932,17 +2931,17 @@ spring整合mail
 
    ![image-20220215022452235](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215022452235.png)
 
-   如果msg.setFrom(from + "(章北海)")，那么会将收件人的邮箱前加上这个备注名称
+   如果`msg.setFrom(from + "(章北海)")`，那么会将收件人的邮箱前加上这个备注名称
 
    ![image-20220215022959431](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215022959431.png)
 
-[P124实用开发篇-120-发送多部件邮件](https://www.bilibili.com/video/BV15b4y1a7yG?p=124)
+[P124 实用开发篇-120-发送多部件邮件](https://www.bilibili.com/video/BV15b4y1a7yG?p=124)
 
-* 要想在发送邮件的时候可以带上图片或者文件等附件，需要使用MimeMessage类对象封装消息 
+* 要想在发送邮件的时候可以带上图片或者文件等附件，需要使用`MimeMessage`类对象封装消息 
 
-* 要想正文以html格式解析，需要指定第二个参数为true
+* 要想正文以`html`格式解析，需要指定第二个参数为`true`
 
-* 要想发送附件，需要指定第二个参数为true
+* 要想发送附件，需要指定第二个参数为`true`
 
 * 具体代码如下：
 
@@ -2977,12 +2976,586 @@ spring整合mail
 
 ![image-20220215030553525](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215030553525.png)
 
-[P125实用开发篇-121-消息简介](https://www.bilibili.com/video/BV15b4y1a7yG?p=125)
-
 #### 16.4 消息
 
-[P126实用开发篇-122-购物订单案例-发送短信](https://www.bilibili.com/video/BV15b4y1a7yG?p=126)
+##### springboot_16_04_01_mq_prepare
 
-[P127实用开发篇-123-ActiveMQ安装](https://www.bilibili.com/video/BV15b4y1a7yG?p=127)
+[P125 实用开发篇-121-消息简介](https://www.bilibili.com/video/BV15b4y1a7yG?p=125) 
 
-[P128实用开发篇-124-springboot整合ActiveMQ](https://www.bilibili.com/video/BV15b4y1a7yG?p=128)
+![image-20220215032443690](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215032443690.png)
+
+![image-20220215032353037](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215032353037.png)
+
+![image-20220215032923713](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215032923713.png)
+
+![image-20220215033030437](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215033030437.png)
+
+![image-20220215033127986](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215033127986.png)
+
+[P126 实用开发篇-122-购物订单案例-发送短信](https://www.bilibili.com/video/BV15b4y1a7yG?p=126)
+
+1. 购物订单案例-发送短信基础代码准备
+
+   * 发送短信的业务层接口`MessageService.java`
+
+     ```java
+     public interface MessageService {
+         void sendMessage(String orderId);
+     
+         String doMessage();
+     }
+     ```
+
+     发送短信的业务层实现类`MessageServiceImpl.java`
+
+     ```java
+     @Service
+     public class MessageServiceImpl implements MessageService {
+         private ArrayList<String> msgList = new ArrayList<String>();
+         @Override
+         public void sendMessage(String orderId) {
+             System.out.println("待发送短信的订单已纳入处理队列，id：" + orderId);
+             msgList.add(orderId);
+         }
+     
+         @Override
+         public String doMessage() {
+             String orderId = msgList.remove(0);
+             System.out.println("已发送短信发送业务，id：" + orderId);
+             return orderId;
+         }
+     }
+     ```
+
+     发送短信的表现层控制类`MessageController.java`
+
+     ```java
+     @RestController
+     @RequestMapping("/msgs")
+     public class MessageController {
+         @Autowired
+         private MessageService messageService;
+     
+         @GetMapping
+         public String doMessage() {
+             String id = messageService.doMessage();
+             return id;
+         }
+     }
+     ```
+
+   * 处理订单的业务层接口`OrderService.java`
+
+     ```java
+     public interface OrderService {
+         void order(String id);
+     }
+     ```
+
+     处理订单的业务层实现类`OrderServiceImpl.java`
+
+     ```java
+     @Service
+     public class OrderServiceImpl implements OrderService {
+         @Autowired
+         private MessageService messageService;
+     
+         @Override
+         public void order(String orderId) {
+             // 一系列的操作，包含各种服务调用，处理各种业务
+             System.out.println("订单开始处理");
+             // 短信消息处理
+             messageService.sendMessage(orderId);
+     
+             System.out.println("订单处理结束");
+             System.out.println();
+         }
+     }
+     ```
+
+     处理订单的表现层控制类`OrderController.java`
+
+     ```java
+     @RestController
+     @RequestMapping("/orders")
+     public class OrderController {
+         @Autowired
+         private OrderService orderService;
+     
+         @PostMapping("{id}")
+         public void order(@PathVariable String orderId) {
+             orderService.order(orderId);
+         }
+     }
+     ```
+
+   * 到此案例基础代码准备完成
+
+[P127 实用开发篇-123-ActiveMQ安装](https://www.bilibili.com/video/BV15b4y1a7yG?p=127)
+
+下载地址：[https://activemq.apache.org/components/classic/download/](https://activemq.apache.org/components/classic/download/)
+
+这里以`windows`平台为例，下载好安装包以后解压缩，去软件目录的`bin\win64`下面双击`activemq.bat`即可启动。
+
+运行过程中报错了，发现了我电脑上的`1883`端口被占用
+
+![image-20220215145018673](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215145018673.png)
+
+启动一个命令行，输入`netstat -ano | findstr "1883"`
+
+![image-20220215145208792](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215145208792.png)
+
+结果居然什么也没查出来，这就奇怪了。没办法先去配置文件里面改个端口吧，编辑软件目录的`conf\activemq.xml`文件，然后找到<transportConnectors>标签下面的`mqtt`的那一项，将uri里面的端口改成`8888`，
+
+![image-20220215145557387](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215145557387.png)
+
+改完后再启动一下`ActiveMQ`，没有报错
+
+![image-20220215152546926](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215152546926.png)
+
+去浏览器输入`http://localhost:8161`，账号密码都是`admin`，可以登录到主界面，表示`ActiveMQ`启动正常
+
+<font color="red">注：如果`ActiveMQ`不是安装在本地，比如阿里云或者局域网，需要修改软件目录的`conf\jetty.xml`的`jettyPort`属性，将默认的`localhost`改成实际`IP`地址即可。</font>
+
+![image-20220215162120814](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215162120814.png)
+
+##### springboot_16_04_02_mq_activemq
+
+[P128 实用开发篇-124-springboot整合ActiveMQ](https://www.bilibili.com/video/BV15b4y1a7yG?p=128)
+
+基于购物订单案例-发送短信案例的代码，整合`ActiveMQ`
+
+1. 在`pom.xml`中加入`springboot`整合`ActiveMQ`的依赖
+
+   ```xml
+   <!--ActiveMQ-->
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-activemq</artifactId>
+   </dependency>
+   ```
+
+2. 在`application.yml`中加入`activemq`的配置
+
+   ```yaml
+   spring:
+     activemq:
+       broker-url: tcp://192.168.0.102:61616
+     jms:
+       template:
+         # 指定消息队列的名字
+         default-destination: jacktgq
+   ```
+
+3. 编写业务层接口`MessageService`的实现类`MessageServiceActivemqImpl`，注意需要将上个案例中的`MessageServiceImpl`类上的`@Service`注解去掉，要不然自动注入的时候会发生冲突。
+
+   ```java
+   @Service
+   public class MessageServiceActivemqImpl implements MessageService {
+       @Autowired
+       private JmsMessagingTemplate messagingTemplate;
+   
+       @Override
+       public void sendMessage(String orderId) {
+           System.out.println("待发送短信的订单已纳入处理队列，id：" + orderId);
+           // 将消息存到消息队列的时候如果不指定destination，也就是队列名，就会存到默认的队列中， 如果application.yml中没有配置默认的队列名， 就会报错
+           // messagingTemplate.convertAndSend(orderId);
+           // 也可以手动指定队列名
+           messagingTemplate.convertAndSend("order.queue.id", orderId);
+       }
+   
+       @Override
+       public String doMessage() {
+           // 从默认队列中获取消息
+           // String orderId = messagingTemplate.receiveAndConvert(String.class);
+           // 从指定队列中获取消息
+           String orderId = messagingTemplate.receiveAndConvert("order.queue.id", String.class);
+           System.out.println("已发送短信发送业务，id：" + orderId);
+           return orderId;
+       }
+   }
+   ```
+
+   启动项目，访问下面的地址，往`MQ`中存取一些消息
+
+   ```java
+   http://localhost:8080/orders/1
+   http://localhost:8080/orders/2
+   http://localhost:8080/orders/3
+   http://localhost:8080/orders/4
+   http://localhost:8080/msgs/
+   ```
+
+   去`MQ`的后台管理页面查看一下数据储存情况
+
+   ![image-20220215170440244](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215170440244.png)
+
+   ![image-20220215170527955](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215170527955.png)
+
+   消息存取正常。
+
+4. 要想消息存到`MQ`中以后自动去消费，就要用到JMS的消息监听器技术，只要被监听的队列中接收到新的数据就会去取出来执行。
+
+   * 定义一个`MessageListener`类，在类头上加上`@Component`注解，将这个类交给spring管理
+   * 定义一个方法`receive(String orderId)`， 在方法上加上`@JmsListener(destination = "order.queue.id")`，需要指定队列名称。
+   * 还可以在方法上加`@SendTo("order.other.queue.id")`注解将当前方法的返回值再发送到其他队列
+   * 然后启动项目即可。
+
+   ```java
+   @Component
+   public class MessageListener {
+       @JmsListener(destination = "order.queue.id")
+       // 还可以将当前方法的返回值再发送到其他队列
+       @SendTo("order.other.queue.id")
+       public String receive(String orderId) {
+           System.out.println("已完成短信发送业务，id：" + orderId);
+           return "done::id::" + orderId;
+       }
+   }
+   ```
+
+5. 在`application.yml`文件中使用`pub-sub-domain`属性设置消息模型
+
+   ```yaml
+   spring:
+     activemq:
+       broker-url: tcp://192.168.0.102:61616
+     jms:
+       # 是否使用发布订阅模型，默认为false，点对点模型
+       pub-sub-domain: true
+       template:
+         # 指定消息队列的名字
+         default-destination: jacktgq
+   ```
+
+   如果使用了发布订阅模型，那么在`ActiveMQ`的管理界面中查看消息，需要在`Topics`选项下面查找（不会发到`Queues`选项下面）。
+
+   ![image-20220215172938462](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215172938462.png)
+
+##### springboot_16_04_03_mq_rabbitmq_direct
+
+[P129 实用开发篇-125-RabbitMQ安装](https://www.bilibili.com/video/BV15b4y1a7yG?p=129)
+
+> `RabbitMQ`基于`Erlang`语言编写，需要先安装`Erlang`环境，类似执行`java`程序需要先安装`jdk(jre)`。
+
+* `Erlang`安装
+
+  下载地址：[https://www.erlang.org/downloads](https://www.erlang.org/downloads)
+
+  安装：一键傻瓜式安装，安装完毕需要重启，需要依赖`windows`组件
+
+  配置环境变量：`ERLANG_HOME`、`PATH`
+
+  ![image-20220215175957645](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215175957645.png)
+
+  ![image-20220215180107622](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215180107622.png)
+
+* 安装`RabbitMQ`
+
+  * 下载地址：[https://www.rabbitmq.com/install-windows.html](https://www.rabbitmq.com/install-windows.html)
+
+  * 找到`Direct Downloads`的地方，点击直接下载`exe`文件
+
+    ![image-20220215181030165](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215181030165.png)
+
+  * 安装：一键傻瓜式安装
+
+  * 启动：先以管理员权限启动一个黑窗口，`cd`到软件安装目录的`rabbitmq_server-3.9.13\sbin`下，输入`rabbitmq-service.bat start`，提示服务已经启动即可。 
+
+    <img src="https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215182444713.png" alt="image-20220215182444713" style="zoom:200%;" />
+
+    在任务管理器的服务选项下面也可以找到`RabbitMQ`服务，以后启动和停止就可以在这里操作了
+
+    ![image-20220215182808721](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215182808721.png)
+
+  * 开启图形化管理页面插件
+
+    继续在刚才上面的黑窗口中输入`rabbitmq-plugins.bat list`，会以列表的形式枚举自带的所有插件，找到`rabbitmq_management`就是我们需要开启的插件。
+
+    ![image-20220215183330490](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215183330490.png)
+
+    继续输入命令`rabbitmq-plugins.bat enable rabbitmq_management`，然后回车，会显示开启了三个关联的插件。
+
+    ![image-20220215183725933](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215183725933.png)
+
+    再次输入`rabbitmq-plugins.bat list`，这次列表中显示`rabbitmq_management`前面多了`E*`，表示这个插件处于启用状态。
+
+    去浏览器中输入[http://localhost:15672/](http://localhost:15672/)，会显示登录界面
+
+    ![image-20220215184050880](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215184050880.png)
+
+    输入账号密码（都是`guest`）,会跳转到`RabbitMQ`管理页面
+
+    ![image-20220215184201664](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215184201664.png)
+
+    ![image-20220215184224846](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215184224846.png)
+
+[P130 实用开发篇-126-springboot整合RabbitMQ(direct模式)](https://www.bilibili.com/video/BV15b4y1a7yG?p=130)
+
+1. 在`pom.xml`中加入`springboot`整合`RabbitMQ`的依赖
+
+   ```xml
+   <!--RabbitMQ-->
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-amqp</artifactId>
+   </dependency>
+   ```
+
+2. 在`application.yml`中加入`RabbitMQ`的配置
+
+   ```yaml
+   spring:
+     rabbitmq:
+       host: localhost
+       port: 5672
+   ```
+
+3. 编写`RabbitDirectConfig`类，配置直连模式的交换机和队列
+
+   ```java
+   @Configuration
+   public class RabbitDirectConfig {
+       @Bean
+       // Direct模式的队列
+       public Queue directQueue() {
+           // durable:是否持久化，默认false
+           // exclusive:是否当前连接专用，默认False，连接关闭后队列即被删除
+           // autoDelete:是否自动删除，当生产者或消费者不再使用此队列，自动删除
+           // 一个参数的构造方法内部默认调用了4个参数的构造方法，后三个参数依次为true,false,false
+           return new Queue("direct_queue");
+       }
+   
+       @Bean
+       // Direct模式的交换机
+       public DirectExchange directExchange() {
+           return new DirectExchange("directExchange");
+       }
+   
+       @Bean
+       public Binding bindingDirect() {
+           return BindingBuilder.bind(directQueue()).to(directExchange()).with("direct");
+       }
+   }
+   ```
+
+4. 编写业务层接口`MessageService`的实现类`MessageServiceRabbitmqDirectImpl`，注意需要将上个案例中的`MessageServiceImpl`类上的`@Service`注解去掉，要不然自动注入的时候会发生冲突。
+
+   ```java
+   @Service
+   public class MessageServiceRabbitmqDirectImpl implements MessageService {
+       private AmqpTemplate amqpTemplate;
+       @Override
+       public void sendMessage(String orderId) {
+           System.out.println("待发送短信的订单已纳入处理队列，id：" + orderId);
+           // 指定RabbitDirectConfig中的内容
+           amqpTemplate.convertAndSend("directExchange", "direct", orderId);
+       }
+   
+       @Override
+       public String doMessage() {
+           String orderId = (String) amqpTemplate.receiveAndConvert("directExchange");
+           System.out.println("已发送短信发送业务，id：" + orderId);
+           return orderId;
+       }
+   }
+   ```
+
+5. 要想消息存到MQ中以后自动去消费，就要用到JMS的消息监听器技术，只要被监听的队列中接收到新的数据就会去取出来执行。
+
+   * 定义一个`MessageListener`类，在类头上加上`@Component`注解，将这个类交给`spring`管理
+   * 定义一个方法`receive(String orderId)`， 在方法上加上`@RabbitListener(queues = "direct_queue")`，需要指定队列名称。
+   * 然后启动项目即可。
+
+   ```java
+   @Component
+   public class MessageListener {
+       @RabbitListener(queues = "direct_queue")
+       public void receive(String orderId) {
+           System.out.println("已完成短信发送业务(RabbitMQ Direct one)，id：" + orderId);
+       }
+   }
+   ```
+
+   * <font color="red">注： 如果这里`receive()`方法带了返回值，则会报错如下错误：</font>
+
+     ```java
+     Caused by: org.springframework.amqp.AmqpException: Cannot determine ReplyTo message
+     ```
+
+     网上查找相关资料后得知，出错的原因是：`@RabbitListener`注解修饰监听的方法添加了返回值。此方法返回的消息没有设置目的地，解决：只要把监听的方法的返回值改为`void`即可。
+
+6. 将`MessageListener.java`复制出来一份，然后把仅修改`receive`方法中的输出语句，代码如下所示：
+
+   ```java
+   @Component
+   public class MessageListener2 {
+       @RabbitListener(queues = "direct_queue")
+       public void receive(String orderId) {
+           System.out.println("已完成短信发送业务(RabbitMQ Direct two)，id：" + orderId);
+       }
+   }
+   ```
+
+   启动项目以后向消息队列中存值，查看控制台的输出语句，可以知道两个监听器轮询交替被调用。
+
+   ![image-20220215214619331](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215214619331.png)
+
+   
+
+   
+
+
+
+##### springboot_16_04_03_mq_rabbitmq_topic
+
+[P131 实用开发篇-127-springboot整合RabbitMQ(topic模式)](https://www.bilibili.com/video/BV15b4y1a7yG?p=131)
+
+`Topic`模式的代码和`Direct`模式的代码很相似，所以，只需要根据`Direct`模式的代码复制一份修改即可。
+
+1. 编写`RabbitTopicConfig`类，配置`Topic`模式的交换机和队列，这里为了看效果，配置两个队列`topic_queue1`和topic_queue2
+
+   ```java
+   @Configuration
+   public class RabbitTopicConfig {
+       @Bean
+       // Topic模式的队列
+       public Queue topicQueue1() {
+           // durable:是否持久化，默认false
+           // exclusive:是否当前连接专用，默认False，连接关闭后队列即被删除
+           // autoDelete:是否自动删除，当生产者或消费者不再使用此队列，自动删除
+           // 一个参数的构造方法内部默认调用了4个参数的构造方法，后三个参数依次为true,false,false
+           return new Queue("topic_queue1");
+       }
+   
+       @Bean
+       // Topic模式的队列
+       public Queue topicQueue2() {
+           // durable:是否持久化，默认false
+           // exclusive:是否当前连接专用，默认False，连接关闭后队列即被删除
+           // autoDelete:是否自动删除，当生产者或消费者不再使用此队列，自动删除
+           // 一个参数的构造方法内部默认调用了4个参数的构造方法，后三个参数依次为true,false,false
+           return new Queue("topic_queue2");
+       }
+   
+       @Bean
+       // Topic模式的交换机
+       public TopicExchange topicExchange() {
+           return new TopicExchange("topicExchange");
+       }
+   
+       @Bean
+       public Binding bindingTopic1() {
+           return BindingBuilder.bind(topicQueue1()).to(topicExchange()).with("topic.order.id");
+       }
+   
+       @Bean
+       public Binding bindingTopic2() {
+           return BindingBuilder.bind(topicQueue2()).to(topicExchange()).with("id");
+       }
+   }
+   ```
+
+2. 编写业务层接口`MessageService`的实现类`MessageServiceRabbitmqTopicImpl`
+
+   ```java
+   @Service
+   public class MessageServiceRabbitmqTopicImpl implements MessageService {
+       @Autowired
+       private AmqpTemplate amqpTemplate;
+       @Override
+       public void sendMessage(String orderId) {
+           System.out.println("待发送短信的订单已纳入处理队列，id：" + orderId);
+           // 指定RabbitDirectConfig中的内容
+           amqpTemplate.convertAndSend("topicExchange", "top.order.id", orderId);
+       }
+   
+       @Override
+       public String doMessage() {
+           String orderId = (String) amqpTemplate.receiveAndConvert("topicExchange");
+           System.out.println("已发送短信发送业务，id：" + orderId);
+           return orderId;
+       }
+   }
+   ```
+
+3. 要想消息存到`MQ`中以后自动去消费，就要用到JMS的消息监听器技术，只要被监听的队列中接收到新的数据就会去取出来执行。
+
+   * 定义一个`MessageListener`类，在类头上加上`@Component`注解，将这个类交给`spring`管理
+   * 上面定义了两个队列，所以这里定义2个方法`receive1(String orderId)`和`receive2(String orderId)`， 分别在方法上加上`@RabbitListener(queues = "topic_queue1")`和`@RabbitListener(queues = "topic_queue2")`监听两个队列
+   * 然后启动项目即可。
+
+   ```java
+   @Component
+   public class MessageListener {
+       @RabbitListener(queues = "topic_queue1")
+       public void receive1(String orderId) {
+           System.out.println("已完成短信发送业务(RabbitMQ topic_queue111111)，id：" + orderId);
+       }
+   
+       @RabbitListener(queues = "topic_queue2")
+       public void receive2(String orderId) {
+           System.out.println("已完成短信发送业务(RabbitMQ topic_queue222222)，id：" + orderId);
+       }
+   }
+   ```
+   
+4. 与`Direct`模式不同的是，`Topic`模式在定义队列的时候，`routingKey`支持模糊匹配，比如可以在`RabbitTopicConfig`类中的`bindingTopic1()`和`bindingTopic2()`方法，两个方法里面的`routingKey`参数的指定都是绝对匹配的，发送消息的时候必须指定成一样`routingKey`的值才能将消息存到对应的队列中。
+
+   ```java
+   @Bean
+   public Binding bindingTopic1() {
+       return BindingBuilder.bind(topicQueue1()).to(topicExchange()).with("topic.order.id");
+   }
+   
+   @Bean
+   public Binding bindingTopic2() {
+       return BindingBuilder.bind(topicQueue2()).to(topicExchange()).with("id");
+   }
+   ```
+
+   如果对于`with`里面填的`routingKey`，`bindingTopic1()`方法中的配置为`topic.*.id`，`bindingTopic2()`方法中的配置为`topic.order.*`，其中`*`可以匹配任意单词，具体代码如下：
+
+   ```java
+   @Bean
+   public Binding bindingTopic1() {
+       return BindingBuilder.bind(topicQueue1()).to(topicExchange()).with("topic.*.id");
+   }
+   @Bean
+   public Binding bindingTopic2() {
+       return BindingBuilder.bind(topicQueue2()).to(topicExchange()).with("topic.order.*");
+   }
+   ```
+
+   这样修改后，`MessageServiceRabbitmqTopicImpl`类中的消息发送到消息队列的时候，`amqpTemplate.convertAndSend()`方法的第二个参数`routingKey`的值，
+
+   * 如果指定为`topic.order.ids`，那么`top.order.*`能匹配上，而`topic.*.id`不能匹配上，消息会存到名字为`topic_queue2`的消息队列中；
+
+   * 如果`routingKey`的值指定为`top.orders.id`，那么只有`topic.*.id`能匹配上，消息会存到名字为`topic_queue1 `；
+
+   * 如果`routingKey`的值指定为`top.orders.id`，那么`top.order.*`和`topic.*.id`都能匹配上，消息就会同时存到两个队列中。
+
+   ```java
+   @Service
+   public class MessageServiceRabbitmqTopicImpl implements MessageService {
+       @Autowired
+       private AmqpTemplate amqpTemplate;
+       @Override
+       public void sendMessage(String orderId) {
+           System.out.println("待发送短信的订单已纳入处理队列，id：" + orderId);
+           // 指定routingKey的值为topic.order.id，消息会同时存到两个消息队列中
+           amqpTemplate.convertAndSend("topicExchange", "topic.order.id", orderId);
+       }
+   
+       @Override
+       public String doMessage() {
+           String orderId = (String) amqpTemplate.receiveAndConvert("topicExchange");
+           System.out.println("已发送短信发送业务，id：" + orderId);
+           return orderId;
+       }
+   }
+   ```
+
+5. 令
+
+   ![image-20220215225726767](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215225726767.png)
