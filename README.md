@@ -3091,6 +3091,8 @@ j2cache.l2-cache-open = false
 
    * 到此案例基础代码准备完成
 
+##### springboot_16_04_02_mq_activemq
+
 [P127 实用开发篇-123-ActiveMQ安装](https://www.bilibili.com/video/BV15b4y1a7yG?p=127)
 
 下载地址：[https://activemq.apache.org/components/classic/download/](https://activemq.apache.org/components/classic/download/)
@@ -3118,8 +3120,6 @@ j2cache.l2-cache-open = false
 <font color="red">注：如果`ActiveMQ`不是安装在本地，比如阿里云或者局域网，需要修改软件目录的`conf\jetty.xml`的`jettyPort`属性，将默认的`localhost`改成实际`IP`地址即可。</font>
 
 ![image-20220215162120814](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215162120814.png)
-
-##### springboot_16_04_02_mq_activemq
 
 [P128 实用开发篇-124-springboot整合ActiveMQ](https://www.bilibili.com/video/BV15b4y1a7yG?p=128)
 
@@ -3407,7 +3407,7 @@ j2cache.l2-cache-open = false
 
 
 
-##### springboot_16_04_03_mq_rabbitmq_topic
+##### springboot_16_04_04_mq_rabbitmq_topic
 
 [P131 实用开发篇-127-springboot整合RabbitMQ(topic模式)](https://www.bilibili.com/video/BV15b4y1a7yG?p=131)
 
@@ -3559,3 +3559,636 @@ j2cache.l2-cache-open = false
 5. 令
 
    ![image-20220215225726767](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220215225726767.png)
+
+##### springbooot_16_05_rocketmq
+
+[P132 实用开发篇-128-RocketMQ安装](https://www.bilibili.com/video/BV15b4y1a7yG?p=132)
+
+* `RocketMQ`安装
+
+  * 下载地址：[https://rocketmq.apache.org/](https://rocketmq.apache.org/)，
+  * 下载完解压缩即可，默认服务端口：9876
+
+  * 配置环境变量：`ROCKETMQ_HOME`、`PATH`、`NAMESRV_ADDR`(建议)：127.0.0.1:9876
+
+  ![image-20220228003122616](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228003122616.png)
+
+  ![image-20220228003242985](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228003242985.png)
+
+  ![image-20220228003422761](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228003422761.png)
+
+  
+
+* `RocketMQ`启动
+
+  > `RocketMQ`的启动分为两部分，包括`NameServer`服务和`Broker`服务。
+
+  首先启动`NameServer`服务
+
+  * 双击安装目录的`bin`目录下的`mqnamesrv.cmd`启动命名服务器，这时候发生诡异的事情了，黑窗口一闪而过，根据经验，绝对是报错了。为了看到错误，我编辑了`mqnamesrv.cmd`文件，在最后加了一句`pause`，这样执行的时候就算报错了，黑窗口也不会立马关闭。
+
+    ![image-20220228015834363](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228015834363.png)
+
+    再次双击`mqnamesrv.cmd`，看到报了如下的错误：
+
+    ![image-20220228020052679](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228020052679.png)
+
+    我先自己排查下原因，
+
+    ![image-20220228021851485](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228021851485.png)
+
+    在网上查阅了相关资料后，出现问题的原因是，jdk安装路径的问题，我安装jdk的时候默认了C盘的`Program Files`目录下，这个目录中间有空格，就是这个空格导致的问题，可是我去黑窗口输入`javac`、`java -version`等命令，并且`tomcat`、`maven`都可以启动啊，就很奇怪。参考博客：[https://blog.csdn.net/weixin_41720239/article/details/118340382](https://blog.csdn.net/weixin_41720239/article/details/118340382)，知道了问题，下面就有两种解决方案了：
+
+    1. 重装jdk，装到一个纯英文且路径中没有空格的目录下，然后重新配置环境变量，比较麻烦，我没有使用；
+
+    2. 经过网上查阅资料，我找到了第二种解决方案，顺便记录一下我为了解决这个问题的思考过程：
+
+       * 首先看最开始报的错误是<font color="red">找不到或无法加载主类 `Files\Java\jdk1.8.0_131\jre\lib\ext`</font>,这个路径提到了jdk的安装路径的一部分，应该跟Java的环境变量`JAVA_HOME`有关，而`mqnamesrv.cmd`中根本没有提到；
+
+       * 而又发现第19行是`call "%ROCKETMQ_HOME%\bin\runserver.cmd"`，调用了另外一个叫`runserver.cmd`的cmd脚本，所以再编辑当前目录下的`runserver.cmd`文件，看到第34行`%JAVA_HOME%\jre\lib\ext`，问题应该就在这里；
+
+       * JAVA_HOME路径中的Program Files的空格导致的这个问题，那么在JAVA_HOME外面加上双引号不就行了；
+
+         ![image-20220228015445505](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228015445505.png)
+
+       * 然后再去双击`mqnamesrv.cmd`，运行成功，如下图所示。
+
+         ![image-20220228022559775](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228022559775.png)
+
+  其次再启动`Broker`服务
+
+  * 同样的，启动`Broker`服务的时候也会跟上面一样报错，解决方案是修改`runbroker.cmd`文件，给39行的`JAVA_HOME`外面加上双引号，如下图所示。
+
+    ![image-20220228023751164](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228023751164.png)
+
+  * 双击`mqbroker.cmd`文件，等待启动即可，成功的话会提示服务监听在9876端口。
+
+    ![image-20220228030913052](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228030913052.png)
+
+* 下面验证一下`RocketMQ`服务是否可用
+
+  `RocketMQ`的`lib`包下自带了一个`rocketmq-example-4.9.2.jar`的`jar`包，用压缩软件打开一下，下面将会使用`Producer`和`Comsumer`这两个类来验证`RocketMQ`的可用性。步骤如下：
+
+  ![image-20220228025121291](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228025121291.png)
+
+  * 去`RocketMQ`的`bin`目录下，启动黑窗口，敲如下命令：
+
+    ```shell
+    tools org.apache.rocketmq.example.quickstart.Producer
+    ```
+
+    ![image-20220228025749691](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228025749691.png)
+
+    如果`RocketMQ`服务正常的话，会生产1000条消息，
+    
+    可是我报了如下错误：
+    
+    ```java
+    org.apache.rocketmq.client.exception.MQClientException: Send [3] times, still failed, cost [116]ms, Topic: TopicTest, BrokersSent: [DESKTOP-LTIN79F, DESKTOP-LTIN79F, DESKTOP-LTIN79F]
+    See http://rocketmq.apache.org/docs/faq/ for further details.
+            at org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl.sendDefaultImpl(DefaultMQProducerImpl.java:681)
+            at org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl.send(DefaultMQProducerImpl.java:1391)
+            at org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl.send(DefaultMQProducerImpl.java:1335)
+            at org.apache.rocketmq.client.producer.DefaultMQProducer.send(DefaultMQProducer.java:336)
+            at org.apache.rocketmq.example.quickstart.Producer.main(Producer.java:67)
+    Caused by: org.apache.rocketmq.client.exception.MQBrokerException: CODE: 14  DESC: service not available now. It may be caused by one of the following reasons: the broker's disk is full [CL:  0.97 CQ:  0.97 INDEX: -1.00], messages are put to the slave, message store has been shut down, etc. BROKER: 172.25.96.1:10911
+    For more information, please visit the url, http://rocketmq.apache.org/docs/faq/
+            at org.apache.rocketmq.client.impl.MQClientAPIImpl.processSendResponse(MQClientAPIImpl.java:668)
+            at org.apache.rocketmq.client.impl.MQClientAPIImpl.sendMessageSync(MQClientAPIImpl.java:507)
+            at org.apache.rocketmq.client.impl.MQClientAPIImpl.sendMessage(MQClientAPIImpl.java:489)
+            at org.apache.rocketmq.client.impl.MQClientAPIImpl.sendMessage(MQClientAPIImpl.java:433)
+            at org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl.sendKernelImpl(DefaultMQProducerImpl.java:870)
+            at org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl.sendDefaultImpl(DefaultMQProducerImpl.java:606)
+            ... 4 more
+    ```
+    
+    如果你在安装的过程中也碰到这个问题可以参考我的解决办法， 如果没有遇到可以跳过这段。
+    
+    网上查阅相关资料了解到<font color="red">这是由于日志文件所在的磁盘的空间太小，`RocketMQ`是根据`ratio`来决定磁盘是否满的，默认是`90%`，每`60`秒扫描一次磁盘，如果大于`ratio`就会对所有的`producer`发送过来的请求返回磁盘满的错。</font>`RocketMQ`服务默认的日志位置是user.home，windows上默认在C盘的`C:\Users\CandyWall`，`linux`上默认在`/root`位置，我这里用安装在了`windows`上，而我C盘装了很多应用，空间已经所剩不多，所以如下两种解决方法：
+    
+    * 方法1：清理`C`盘，腾出更多空间，让`C`盘的可用空间达到`10%`以上，较麻烦，有耐心的可以尝试；
+    
+    * 方法2：修改`RocketMQ`的`user.home`属性，从而修改日志记录位置，将位置改到可用空间较大的其他磁盘，打开`runserver.cmd`和`runbroker.cmd`文件，添加一行配置
+    
+      ```shell
+      set "JAVA_OPT=%JAVA_OPT% -Duser.home=D:\mq\rocketmq\rocketmq\"
+      ```
+    
+      ![image-20220228131015786](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228131015786.png)
+    
+      改完以后，再依次执行`mqnamesrv.cmd`、`mqbroker.cmd`，启动一个黑窗口，
+    
+      输入
+    
+      ```shell
+      tools org.apache.rocketmq.example.quickstart.Producer
+      ```
+    
+      可以看到`Producer`生产的消息发送成功。
+    
+      ![image-20220228131921007](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228131921007.png)
+    
+      再启动一个黑窗口，输入
+    
+      ```shell
+      tools org.apache.rocketmq.example.quickstart.Consumer
+      ```
+    
+      ![image-20220228132431255](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228132431255.png)
+    
+      可以看到消息的消费者也是成功取到了消息，到此验证了安装的`RocketMQ`是可用的。
+
+[P133实用开发篇-129-springboot整合RocketMQ](https://www.bilibili.com/video/BV15b4y1a7yG?p=133)
+
+基于购物订单案例-发送短信案例的代码，整合`RocketMQ`
+
+1. 在`pom.xml`中加入`springboot`整合`ActiveMQ`的依赖
+
+   ```xml
+   <!--AMQP-->
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-amqp</artifactId>
+   </dependency>
+   
+   <!--RocketMQ-->
+   <dependency>
+       <groupId>org.apache.rocketmq</groupId>
+       <artifactId>rocketmq-spring-boot-starter</artifactId>
+       <version>2.2.1</version>
+   </dependency>
+   ```
+
+2. 在`application.yml`中加入`RocketMQ`的配置
+
+   ```yaml
+   rocketmq:
+     name-server: localhost:9876
+     # 指定生产者所属组
+     producer:
+       group: group_rocketmq
+   ```
+   
+3. 编写业务层接口`MessageService`的实现类`MessageServiceRocketmqImpl`，注意需要将上个案例中的`MessageServiceImpl`类上的`@Service`注解去掉，要不然自动注入的时候会发生冲突。
+
+   ```java
+   @Service
+   public class MessageServiceRocketmqImpl implements MessageService {
+       @Autowired
+       private RocketMQTemplate rocketMQTemplate;
+       @Override
+       public void sendMessage(String orderId) {
+           System.out.println("待发送短信的订单已纳入处理队列，id：" + orderId);
+           // 注意RocketMQ不支持类似order.queue.id这样的带特殊字符的destination
+           // 发送同步消息，基本不用
+           // rocketMQTemplate.convertAndSend("order_id", orderId);
+           // 发送异步消息
+           SendCallback callback = new SendCallback() {
+               @Override
+               public void onSuccess(SendResult sendResult) {
+                   System.out.println("消息发送成功！");
+               }
+   
+               @Override
+               public void onException(Throwable throwable) {
+                   System.out.println("消息发送失败！");
+               }
+           };
+           rocketMQTemplate.asyncSend("order_id", orderId, callback);
+       }
+   
+    @Override
+       public String doMessage() {
+        return null;
+       }
+   }
+   ```
+   
+4. 要想消息存到`MQ`中以后自动去消费，就要用到`JMS`的消息监听器技术，只要被监听的队列中接收到新的数据就会去取出来执行。
+   
+   * 定义一个`MessageListener`类，在类头上加上`@Component`注解，将这个类交给`spring`管理
+   * 实现接口`RocketMQListener<String>`和接口中的方法
+   * 在类上加`@RocketMQMessageListener(topic = "order_id", consumerGroup = "group_rocketmq")`，`topic`与`rocketMQTemplate.asyncSend()`方法的第一个参数`destination`的值对应，`consumerGroup`与`application.yml`中的`group`属性的值对应。
+     
+    ```java
+   @Component
+   @RocketMQMessageListener(topic = "order_id", consumerGroup = "group_rocketmq")
+   public class MessageListener implements RocketMQListener<String> {
+       @Override
+       public void onMessage(String orderId) {
+           System.out.println("已完成短信发送业务(RocketMQ topic_queue)，id：" + orderId);
+       }
+   }
+    ```
+
+5. 启动项目，访问下面的地址，往`MQ`中发消息
+
+    ```java
+    http://localhost:8080/orders/1
+    ```
+
+    ![image-20220228195328272](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228195328272.png)
+
+    消息存取成功。
+
+##### springboot_16_06_kafka
+
+[P134实用开发篇-130-Kafka安装](https://www.bilibili.com/video/BV15b4y1a7yG?p=134)
+
+下载地址：[https://kafka.apache.org/downloads](https://kafka.apache.org/downloads)
+
+安装：直接解压即可。
+
+启动：去`bin`目录下可以看到都是`.sh`的执行脚本，这些都是在linux上才可以启动，我这里要在`windows`上进行测试，所以要找`.bat`或者.cmd的脚本了，看`bin`目录下还有一个`windows`目录，这个目录下就是相关的`.bat`执行脚本了。
+
+1. 启动命名服务器`zookeeper`
+
+   在`bin/windows`目录下输入如下命令：
+
+   ```shell
+   zookeeper-server-start.bat ../../config/zookeeper.properties
+   ```
+
+   启动正常如下，默认端口：2181
+
+   ![image-20220228201159709](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228201159709.png)
+
+2. 启动`kafka`
+
+   再启动一个黑窗口，输入如下命令：
+
+   ```shell
+   kafka-server-start.bat ../../config/server.properties
+   ```
+
+   启动正常如下，默认端口：9092
+
+   ![image-20220228201450690](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228201450690.png)
+
+3. 验证`kafka`是否可用
+
+   * 创建`Topic`
+
+     * 开一个黑窗口，创建一个topic
+
+         ```shell
+         kafka-topics.bat --zookeeper 127.0.0.1:2181 --create --replication-factor 1 --partions 1 --topic candywall
+         ```
+
+         ![image-20220228202306958](C:\Users\CandyWall\AppData\Roaming\Typora\typora-user-images\image-20220228202306958.png)
+
+     * 查看`Topic`
+
+         ```shell
+         kafka-topics.bat --zookeeper 127.0.0.1:2181 --list
+         ```
+
+     	可以看到有我上面创建的名字为candywall的topic
+
+         ![image-20220228202354376](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228202354376.png)
+
+     * 删除`topic`
+
+         ```shell
+         kafka-topics.bat --delete --zookeeper 127.0.0.1:2181 --topic candywall
+         ```
+
+   * 生产消息
+
+     继续使用这个黑窗口，作为消息的生产者，产生一些消息，输入如下命令：
+
+       ```shell
+     kafka-console-producer.bat --broker-list 127.0.0.1:9092 --topic candywall
+       ```
+
+   * 消费消息
+
+     再开一个黑窗口，作为消息的消费者，去消费一些消息，输入如下命令：
+
+       ```shell
+     kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic candywall --from-beginning
+       ```
+
+   * 如果两个窗口里面可以互相收发消息，说明kafka功能是可用的。
+   
+     ![image-20220228204539647](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228204539647.png)
+
+[P135实用开发篇-131-springboot整合Kafka](https://www.bilibili.com/video/BV15b4y1a7yG?p=135)
+
+基于购物订单案例-发送短信案例的代码，整合`RocketMQ`
+
+1. 在`pom.xml`中加入`springboot`整合`Kafka`的依赖
+
+   ```xml
+   <!--Kafka-->
+   <dependency>
+       <groupId>org.springframework.kafka</groupId>
+       <artifactId>spring-kafka</artifactId>
+   </dependency>
+   ```
+
+2. 在`application.yml`中加入`kafka`的配置
+
+   ```yaml
+   spring:
+     kafka:
+       bootstrap-servers: localhost:9092
+       consumer:
+         group-id: order
+   ```
+
+3. 编写业务层接口`MessageService`的实现类`MessageServiceKafkaImpl`，注意需要将上个案例中的`MessageServiceImpl`类上的`@Service`注解去掉，要不然自动注入的时候会发生冲突。
+
+   ```java
+   @Service
+   public class MessageServiceKafkaImpl implements MessageService {
+       @Autowired
+       private KafkaTemplate<String, String> kafkaTemplate;
+       @Override
+       public void sendMessage(String orderId) {
+           System.out.println("待发送短信的订单已纳入处理队列（kafka），id：" + orderId);
+           kafkaTemplate.send("candywall", orderId);
+       }
+   
+       @Override
+       public String doMessage() {
+           return null;
+       }
+   }
+   ```
+
+4. 要想消息存到`MQ`中以后自动去消费，就要用到`JKafka`的消息监听器技术，只要被监听的队列中接收到新的数据就会去取出来执行。
+
+   * 定义一个`MessageListener`类，在类头上加上`@Component`注解，将这个类交给spring管理；
+   * 编写onMessage()方法，在方法上加上`@KafkaListener(topics = "candywall")`，其中`topics`的值和`MessageServiceKafkaImpl`中的`kafkaTemplate.send()`方法的第一个参数topic的值对应；
+
+    ```java
+   @Component
+   @RocketMQMessageListener(topic = "order_id", consumerGroup = "group_rocketmq")
+   public class MessageListener implements RocketMQListener<String> {
+       @Override
+       public void onMessage(String orderId) {
+           System.out.println("已完成短信发送业务(RocketMQ topic_queue)，id：" + orderId);
+       }
+   }
+    ```
+
+5. 启动项目，访问下面的地址，往`MQ`中发消息
+
+   ```java
+   http://localhost:8080/orders/1
+   ```
+
+   ![image-20220228211417129](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228211417129.png)
+
+   消息存取成功。
+
+#### 17. 监控
+
+##### springboot_17_01_admin_server
+
+[P136实用开发篇-132-监控的意义](https://www.bilibili.com/video/BV15b4y1a7yG?p=136)
+
+[P137实用开发篇-133-SpringBootAdmin](https://www.bilibili.com/video/BV15b4y1a7yG?p=137)
+
+SpringBootAdmin分为服务器端和客户端：服务器端不涉及业务方法，近用来监控其他被监控的项目；客户端会将一些参数上报给服务器端，还会涉及一些业务方法。
+
+* 在`springboot`中引入`SpringBootAdminServer`（监控控制台）的步骤 
+
+    1. 在`pom.xml`中加入`SpringBootAdminServer`的依赖，跟`SpringBoot`的版本号一致
+
+       ```xml
+       <!--SpringbootAdminServer-->
+       <dependency>
+           <groupId>de.codecentric</groupId>
+           <artifactId>spring-boot-admin-starter-server</artifactId>
+           version>2.6.2</version>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-web</artifactId>
+       </dependency>
+       ```
+     ```
+   
+     ```
+   
+   ```
+   
+   ```
+2. 在`application.yml`中加入指定`SpringbootAdminServer Web`服务的端口号
+   
+       ```yaml
+       server:
+         port: 8080
+   ```
+   
+   ```
+   
+3. 在`springboot`启动类上加`@EnableAdminServer`注解开启`SpringBootAdmin`服务
+   
+4. 启动项目，打开浏览器输入`localhost:8080`就可以进入监控系统的主页了
+   
+   ![image-20220228222034286](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228222034286.png)
+   
+       由于目前没有监控其他项目，所以显示为空，下面建几个项目由监控系统监控
+
+##### springboot_17_02_admin_client
+
+* 在项目中引入`SpringBootAdminClient`（被监控）的步骤
+
+    1. 在`pom.xml`中加入`SpringbootAdminClient`的依赖，跟`SpringBoot`的版本号一致
+
+       ```xml
+       <!--SpringbootAdminClient-->
+       <dependency>
+           <groupId>de.codecentric</groupId>
+           <artifactId>spring-boot-admin-starter-client</artifactId>
+           version>2.6.2</version>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-web</artifactId>
+       </dependency>
+       ```
+
+    2. 在`application.yml`中指定当前`SpringBootAdminClient`客户端端口号，并且指定要加入`SpringbootAdminServer Web`服务`url`地址（包括`IP`和端口号）,这样`SpringBootAdmin`客户端就可以注册到`SpringBootAdmin`上了，从而实现被监控。
+
+       ```yaml
+       # 当前SpringBootAdminClient客户端端口
+       server:
+         port: 8081
+         
+       spring:
+         boot:
+           admin:
+             client:
+               # SpringbootAdminServer Web服务url地址
+               url: http://localhost:8080
+       ```
+
+    3. 启动项目，打开浏览器输入`localhost:8080`，可以看到当前客户端已经注册到监控系统上了
+
+       ![image-20220228225141758](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228225141758.png)
+
+       点监控墙
+
+       ![image-20220228225214785](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228225214785.png)
+
+       再点击这个注册上来的实例，可以看到当前客户端的详细运行状况信息，不过看到的信息还是很有限，接下来去客户端开放更多的参数信息给监控服务器。
+
+       ![image-20220228225429908](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228225429908.png)
+
+    4. 配置开放所有客户端指标信息给服务器
+
+       在`application.yml`中加入如下配置：
+
+       ```yaml
+       # 当前SpringBootAdminClient客户端端口号
+       server:
+         port: 8081
+       
+       spring:
+         boot:
+           admin:
+             client:
+               # SpringbootAdminServer Web服务url地址
+               url: http://localhost:8080
+       # 配置开放给服务器端监控信息
+       management:
+         endpoint:
+           health:
+             # 健康状况的详细信息是否上传到服务器，默认为never
+             show-details: always
+         endpoints:
+           web:
+             exposure:
+               # 开放所有的指标信息，默认为health
+               include: "*"
+       ```
+
+       再启动项目，然后去浏览器查看对当前客户端的监控信息，可以看到监控信息非常丰富，包括内存磁盘的占用率，日志、`JVM`、缓存等信息应有尽有。
+
+       ![image-20220228231135649](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228231135649.png)
+
+##### springboot_17_03_admin_client_ssmp
+
+* 下面基于`springboot_08_ssmp`拷贝出一个新项目`springboot_17_03_admin_client_ssmp`，然后把这个项目注册到监控服务器上。步骤同上，故略。配置完之后，启动这个项目，然后去浏览器的监控界面上可以看到，有两个监控实例了。
+
+    ![image-20220228235028057](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228235028057.png)
+
+* 点击查看这个`ssmp`项目的详细信息，可以看到被监控的指标给多了，还可以看到连接的是`mysql`数据库
+
+    ![image-20220228235143461](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228235143461.png)
+
+* 去浏览器输入`http://localhost/pages/books.html`，多刷新几次，然后再去监控页面去查看关于`ssmp`项目的`http`请求的次数和访问时间的统计
+
+    ![image-20220228235744365](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220228235744365.png)
+
+[P138实用开发篇-134-actuator](https://www.bilibili.com/video/BV15b4y1a7yG?p=138)
+
+![image-20220301004201049](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301004201049.png)
+
+如`SSMP`项目启动在`80`端口，使用`Postman`访问`http://localhost/actuator`，结果返回了一堆更具体的访问地址
+
+![image-20220301133645720](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301133645720.png)
+
+以其中的`health`为例，我们点击这个地址
+
+![image-20220301134219713](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301134219713.png)
+
+`postman`会建立一个新的`http`请求，再点击send发送请求
+
+![image-20220301134344858](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301134344858.png)
+
+可以看到返回的信息就是`SpringBootAdmin`页面关于`SSMP`项目运行时的健康状况信息
+
+![image-20220301134458497](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301134458497.png)
+
+所以这个`SpringBootAdmin`就是通过`http:/ip:port/actuator/端点名称`访问到不同项目的运行指标的。
+
+其他常用端点名称和描述信息如下：
+
+![image-20220301134946953](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301134946953.png)
+
+![image-20220301135054788](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301135054788.png)
+
+![image-20220301135119792](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301135119792.png)
+
+SSMP项目启动的时候会打印一行日志，表示暴露给监控系统的端点数：
+
+```java
+2022-03-01 13:54:43.124  INFO 8500 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoint(s) beneath base path '/actuator'
+```
+
+* 可以通过配置`application.yml`的`management.endpoints.web.exposure.include`属性来指定开放给web监控系统的端点，比如给的值为`"*"`,表示开发所有端点，值为`health`，`info`，表示仅开放当前项目运行时的健康信息和的项目描述信息。
+* 不过最终决定这个端点是否开放的源头是在`management.endpoint.info.enabled`属性，默认为`true`，如果指定为`false`，那么`management.endpoints.web.exposure.include`属性指定了`info`，也不会开放了。
+
+* 还有一个属性`management.endpoints.enabled-by-default`表示开放所有的端点，默认值为`true`，这个所有指的不仅仅是`web`端点，还包括`jmx`等其他访问方式的端点，如Win+R输入`jconsole`，在进程列表中选择`SSMP`项目
+
+  ![image-20220301141637121](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301141637121.png)
+
+  也可以监控这个项目运行时的一些信息
+
+  ![image-20220301141809957](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301141809957.png)
+
+* 需要知道的是JMX默认开放所有的端点，而web只开放一部分。
+
+  ![image-20220301142142625](https://gitee.com/CandyWall/my_pic/raw/master/image/image-20220301142142625.png)
+
+[P139实用开发篇-135-info端点指标控制](https://www.bilibili.com/video/BV15b4y1a7yG?p=139)
+
+如果要自定义SpringBootAdmin客户端的info端点返回的属性值，有两种方式来实现
+
+1. 配置文件法：
+
+   * 在application.yml中加入如下配置：
+
+     ```yaml
+     # 配置开放给服务器端监控信息
+     management:
+       endpoint:
+         health:
+           # 健康状况的详细信息是否上传到服务器，默认为never
+           show-details: always
+         info:
+           # 默认为true
+           enabled: true
+       endpoints:
+         web:
+           exposure:
+             # 开放所有的指标信息，默认为health
+             include: "*"
+     # 保证info端点被启用
+     info:
+       appName: @project.artifactId@
+       version: @project.version@
+       company: 糖果编程之家
+       author: 糖果墙
+     ```
+
+   * 我这里给`info`下配置了4个属性，其中`appName`和`version`都引用了`pom.xml`中的属性值，这里需要先在`pom.xml`的`build`标签下面加下面的配置，否则会报一个`@`符号的解析错误。
+
+        ```xml
+        <!-- 使用 @@ application.yml 获取pom文件中的配置  -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        ```
+        
+   * 启动项目，然后去监控系统界面查看，
+
+
+
+[P140实用开发篇-136-health端点指标控制](https://www.bilibili.com/video/BV15b4y1a7yG?p=140)
+
+
+
+[P141实用开发篇-137-metrics端点指标控制](https://www.bilibili.com/video/BV15b4y1a7yG?p=141)
+
+
+
+[P142实用开发篇-138-自定义端点（实用开发篇完结）](https://www.bilibili.com/video/BV15b4y1a7yG?p=142)
