@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>top.jacktgq</groupId>
-	<artifactId>springboot_16_04_03_mq_rabbitmq_topic</artifactId>
+	<artifactId>springboot_16_04_04_mq_rabbitmq_topic</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<java.version>1.8</java.version>
@@ -26,7 +26,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--RabbitMQ-->
+		<!--AMQP和RabbitMQ-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
