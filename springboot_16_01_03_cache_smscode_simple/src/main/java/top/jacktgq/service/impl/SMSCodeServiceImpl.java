@@ -2,7 +2,6 @@ package top.jacktgq.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.jacktgq.controller.utils.CodeUtils;
 import top.jacktgq.pojo.SMSCode;
