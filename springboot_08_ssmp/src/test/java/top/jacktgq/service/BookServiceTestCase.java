@@ -37,17 +37,17 @@ public class BookServiceTestCase {
 
     @Test
     public void testDelete() {
-        bookService.delete(16);
+        System.out.println(bookService.delete(16));
     }
 
     @Test
     public void testGetById() {
-        bookService.getById(1);
+        System.out.println(bookService.getById(1));
     }
 
     @Test
     public void testGetAll() {
-        bookService.getAll();
+        System.out.println(bookService.getAll());
     }
 
     @Test
